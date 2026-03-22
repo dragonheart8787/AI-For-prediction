@@ -51,3 +51,28 @@ jobs:
           PYTHONIOENCODING: utf-8
         run: |
           python -m pytest tests/test_automl_torch.py -q --tb=short
+
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install core + ruff
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-core.txt ruff
+      - name: compileall (mainline)
+        run: |
+          python -m compileall -q \
+            crawler_train_pipeline.py unified_predict.py launch_predict_service.py demo_backtest_all.py \
+            runtime_paths.py schema_infer.py feature_expansion.py prediction_contracts.py prediction_intervals.py \
+            model_explainability.py pipeline_run_context.py experiment_log.py artifact_registry.py \
+            universal_predictor.py training_data_store.py prediction_target_advisor.py \
+            data_connectors validation model_serving automl nn_models
+      - name: Import smoke
+        run: |
+          python -c "from unified_predict import UnifiedPredictor; from schema_infer import align_sources; from experiment_log import log_training_event; print('import_smoke_ok')"
+      - name: Ruff (tests)
+        run: python -m ruff check tests/

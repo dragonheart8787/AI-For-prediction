@@ -1,5 +1,4 @@
 """架構契約：回傳格式、對齊防漏、核心依賴隔離。"""
-import importlib.util
 import os
 import sys
 
@@ -45,7 +44,7 @@ def test_core_import_unified_predict():
 
 def test_prevent_leakage_disables_bfill_policy():
     pd = pytest.importorskip("pandas")
-    from schema_infer import align_source_frames, AlignSummary
+    from schema_infer import AlignSummary, align_source_frames
 
     ts = pd.date_range("2024-01-01", periods=3, freq="D")
     main = pd.DataFrame({"timestamp": ts, "a": [1.0, 2.0, 3.0]})

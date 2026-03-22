@@ -6,7 +6,7 @@
 
 ## 〇、架構重構（第一輪）
 
-- 契約與設定：`prediction_contracts.py`、`docs/REFACTOR_ROUND1_ARCHITECTURE.md`
+- 契約與設定：`prediction_contracts.py`、歸檔說明 [`archive/documentation/REFACTOR_ROUND1_ARCHITECTURE.md`](../archive/documentation/REFACTOR_ROUND1_ARCHITECTURE.md)
 - 區間／可解釋性：`prediction_intervals.py`、`model_explainability.py`
 - 實驗追溯：`pipeline_run_context.py`、`artifact_registry.py`、`experiment_log.log_training_event`
 - 產物目錄：`artifacts/`（訓練 run 摘要與 `models/*.pkl` 路徑並存）
@@ -23,7 +23,7 @@
 | 爬蟲訓練管線 | 多源、`align_sources` 時間對齊、特徵重要性 | `crawler_train_pipeline.py` |
 | **Walk-forward 驗證** | 時間序列交叉驗證（不含 replay 混合資料） | `--walk-forward`、`validation/walk_forward_eval.py` |
 | **實驗紀錄** | JSON Lines，無需 MLflow | `experiment_log.py` → `data/experiment_runs.jsonl`（可於 `prediction_schema.yaml` 設定） |
-| **HTTP 預測服務** | WSGI：`GET /` 說明頁、`/health`、`/v1/predict`、`/v1/predict_many` | `launch_predict_service.py`、`model_serving/unified_http_service.py` |
+| **HTTP 預測服務** | WSGI：`GET /` 說明頁、`GET /health`、`GET /v1/model/info`、`POST /v1/predict`、`POST /v1/predict_many` | `launch_predict_service.py`、`model_serving/unified_http_service.py` |
 | 時間切分工具 | purge gap、walk-forward 索引 | `validation/time_series_split.py` |
 | 多領域回測 CLI | 合成／爬蟲資料 + 指標 JSON 行 | `demo_backtest_all.py` |
 
@@ -55,8 +55,9 @@ python crawler_train_pipeline.py stock_price_next --model ensemble --preset stro
 python crawler_train_pipeline.py stock_price_next --model automl --automl-trials 25 --preset strong
 
 # 2) 啟動預測 API（另開終端）
-set UNIFIED_MODEL_PATH=models\task_stock_price_next.pkl
-python launch_predict_service.py --port 8765
+# Windows CMD: set UNIFIED_MODEL_PATH=models\task_stock_price_next.pkl
+# Bash: export UNIFIED_MODEL_PATH=models/task_stock_price_next.pkl
+python launch_predict_service.py --model-path models/task_stock_price_next.pkl --port 8765
 
 # 3) 測試 POST（需 curl 或自寫腳本）
 # curl -X POST http://127.0.0.1:8765/v1/predict -H "Content-Type: application/json" -d "{\"X\":[[1,2,3,4,5]],\"domain\":\"financial\"}"
@@ -66,7 +67,7 @@ python demo_backtest_all.py --model linear --batch 32
 ```
 
 > 特徵維度須與訓練時一致；若不知維度，請以訓練日誌中的特徵數為準。  
-> 如何把模型練得更強：見 **`docs/強模型訓練要點.md`**（資料量與真實性優先於調參）。
+> 如何把模型練得更強：見 **[`archive/documentation/強模型訓練要點.md`](../archive/documentation/強模型訓練要點.md)**（資料量與真實性優先於調參）；精簡版已併入 [training.md](training.md)。
 
 ---
 
@@ -76,7 +77,7 @@ python demo_backtest_all.py --model linear --batch 32
 
 以下仍多為實驗或重型模組，**未**預設用於上述 HTTP 一鍵流程：
 
-`data_pipeline/pipeline_optimizer.py`、`serving_engine.py`（舊版）、`gpu_acceleration/`、`neural_architecture_search/`、`reinforcement_learning/`、`knowledge_distillation/`…
+`archive/legacy/packages/` 下舊版模組（如 `data_pipeline`、`gpu_acceleration`、`neural_architecture_search`、`reinforcement_learning`、`knowledge_distillation`）與 `model_serving/serving_engine.py`（舊版引擎）…
 
 若需 **Kafka / K8s / Prometheus 全棧**，請在現有 `docker-compose.yml` 上自行擴充。
 

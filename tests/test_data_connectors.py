@@ -2,15 +2,15 @@
 Data Connectors 測試套件
 測試各資料連接器的 fetch API、離線降級與 retry 行為
 """
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
+
 from data_connectors import (
-    YahooFinanceConnector,
-    OpenMeteoConnector,
     EIAConnector,
-    OWIDConnector,
     NewsAPIConnector,
+    OpenMeteoConnector,
+    OWIDConnector,
     RESTConnector,
+    YahooFinanceConnector,
 )
 
 

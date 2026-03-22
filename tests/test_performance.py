@@ -2,10 +2,12 @@
 效能測試套件
 測試系統整體性能與資源使用
 """
-import pytest
-import numpy as np
-import time
 import os
+import time
+
+import numpy as np
+import pytest
+
 from unified_predict import UnifiedPredictor
 
 
@@ -75,8 +77,8 @@ class TestPerformance:
 
     def test_concurrent_prediction(self):
         """測試並發預測"""
-        import threading
         import queue
+        import threading
 
         predictor = UnifiedPredictor(auto_onnx=False, rate_limit_enabled=False)
         predictor.fit(self.X, self.y, model="linear")
@@ -148,8 +150,9 @@ class TestPerformance:
     def test_resource_cleanup(self):
         """測試資源清理"""
         try:
-            import psutil
             import gc
+
+            import psutil
         except ImportError:
             pytest.skip("需安裝 psutil")
 

@@ -13,7 +13,6 @@ import pytest
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from unified_predict import UnifiedPredictor, _LRUCache, _TokenBucket
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
@@ -450,7 +449,7 @@ class TestFallbackModel:
     def test_fallback_with_unknown_model(self, sample_data):
         X, y = sample_data
         p = UnifiedPredictor(auto_onnx=False)
-        metrics = p.fit(X, y, model="unknown_model_type")
+        p.fit(X, y, model="unknown_model_type")
         assert isinstance(p.model, dict)
         assert "mean_y" in p.model
         result = p.predict(X[:3])

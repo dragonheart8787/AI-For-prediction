@@ -1,5 +1,4 @@
 """多資料源時間對齊單元測試。"""
-import pytest
 
 from schema_infer import align_sources
 
