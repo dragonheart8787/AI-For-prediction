@@ -1,0 +1,12 @@
+{
+  "model_key": "tft",
+  "name": "Local Temporal Fusion Transformer",
+  "description": "本地創建的 時間融合Transformer模型",
+  "type": "deep_learning",
+  "architecture": "transformer",
+  "input_size": 128,
+  "output_size": 1,
+  "created_time": "2025-08-28 12:10:00",
+  "status": "local_created",
+  "is_local": true
+}

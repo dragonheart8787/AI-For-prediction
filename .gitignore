@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+
+# 測試／筆記本
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+htmlcov/
+.coverage
+coverage.xml
+
+# 環境與密鑰（切勿 commit）
+.env
+.env.*
+!.env.example
+
+# 本機產物與大型資料
+models/
+artifacts/
+logs/
+*.pkl
+*.pt
+*.pth
+*.onnx
+*.parquet
+# *.csv — 若專案含範例 CSV 請勿全擋；大型資料目錄建議自行取消註解：
+# enhanced_data/
+# collected_data/
+*.jsonl
+!config/**/*.yaml
+!examples/**/*
+
+# 實驗日誌（若需保留範例可改為 !examples/*.jsonl）
+data/*.jsonl
+data/*.parquet
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 編輯器
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 雜項本機日誌
+*.log

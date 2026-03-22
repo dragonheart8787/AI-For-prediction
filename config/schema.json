@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "input": {
+    "timestamp_field": "timestamp",
+    "common_numeric_fields": ["open", "high", "low", "close", "volume"],
+    "categorical_fields": ["symbol", "asset_type", "regime"],
+    "sequence_window": 32
+  },
+  "output": {
+    "prediction_field": "y_pred",
+    "confidence_field": "confidence",
+    "horizons_field": "horizons"
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "data_sources": {
+    "stocks": {
+      "symbols": [
+        "AAPL", "GOOGL", "MSFT", "TSLA", "AMZN", "NVDA", "META", "NFLX",
+        "TSM", "ASML", "AVGO", "ORCL", "CRM", "ADBE", "AMD", "INTC",
+        "QCOM", "TXN", "MU", "KLAC", "LRCX", "AMAT", "ADI", "MCHP",
+        "NXPI", "MRVL", "WDC", "STX", "HPQ", "DELL", "CSCO", "JPM",
+        "BAC", "WFC", "GS", "MS", "JNJ", "PFE", "UNH", "HD", "PG"
+      ],
+      "period": "2y",
+      "interval": "1d",
+      "enabled": true
+    },
+    "crypto": {
+      "symbols": [
+        "BTC-USD", "ETH-USD", "ADA-USD", "DOT-USD", "SOL-USD", "MATIC-USD",
+        "AVAX-USD", "LINK-USD", "UNI-USD", "ATOM-USD", "LTC-USD", "BCH-USD",
+        "XRP-USD", "DOGE-USD", "SHIB-USD", "TRX-USD", "ETC-USD", "FIL-USD",
+        "NEAR-USD", "ALGO-USD", "VET-USD", "ICP-USD", "THETA-USD", "FTM-USD"
+      ],
+      "period": "2y",
+      "interval": "1d",
+      "enabled": true
+    },
+    "forex": {
+      "symbols": [
+        "EURUSD=X", "GBPUSD=X", "JPYUSD=X", "CADUSD=X", "AUDUSD=X", "CHFUSD=X",
+        "NZDUSD=X", "SEKUSD=X", "NOKUSD=X", "DKKUSD=X", "PLNUSD=X", "CZKUSD=X",
+        "HUFUSD=X", "RUBUSD=X", "TRYUSD=X", "ZARUSD=X", "BRLUSD=X", "MXNUSD=X",
+        "INRUSD=X", "KRWUSD=X", "CNYUSD=X", "HKDUSD=X", "SGDUSD=X", "THBUSD=X"
+      ],
+      "period": "2y",
+      "interval": "1d",
+      "enabled": true
+    },
+    "commodities": {
+      "symbols": [
+        "GC=F", "CL=F", "SI=F", "NG=F", "PL=F", "PA=F", "HG=F", "ZC=F",
+        "ZS=F", "ZW=F", "KC=F", "CC=F", "CT=F", "SB=F", "CC=F", "CT=F"
+      ],
+      "period": "2y",
+      "interval": "1d",
+      "enabled": true
+    },
+    "indices": {
+      "symbols": [
+        "^GSPC", "^DJI", "^IXIC", "^FTSE", "^N225", "^HSI", "^GDAXI", "^FCHI",
+        "^STOXX50E", "^VIX", "^TNX", "^TYX", "^DXY", "^XAU", "^XAG", "^CRB"
+      ],
+      "period": "2y",
+      "interval": "1d",
+      "enabled": true
+    },
+    "economic_indicators": {
+      "sources": ["FRED", "WORLD_BANK", "IMF", "OECD", "BLS"],
+      "indicators": [
+        "GDP", "CPI", "UNEMPLOYMENT", "INTEREST_RATE", "INFLATION",
+        "TRADE_BALANCE", "FOREIGN_EXCHANGE", "MONEY_SUPPLY", "CONSUMER_CONFIDENCE",
+        "MANUFACTURING_PMI", "SERVICES_PMI", "HOUSING_STARTS", "RETAIL_SALES"
+      ],
+      "enabled": true
+    },
+    "news_sentiment": {
+      "sources": ["ALPHA_VANTAGE", "NEWS_API", "FINNHUB"],
+      "keywords": ["earnings", "revenue", "growth", "innovation", "regulation"],
+      "enabled": true
+    },
+    "social_media": {
+      "platforms": ["TWITTER", "REDDIT", "STOCKTWITS"],
+      "symbols": ["AAPL", "TSLA", "NVDA", "BTC-USD"],
+      "enabled": true
+    },
+    "weather_data": {
+      "cities": ["NEW_YORK", "LONDON", "TOKYO", "HONG_KONG", "SINGAPORE"],
+      "metrics": ["temperature", "humidity", "precipitation", "wind_speed"],
+      "enabled": true
+    },
+    "geopolitical_events": {
+      "sources": ["GLOBAL_EVENTS_DB", "CONFLICT_ANALYSIS"],
+      "categories": ["elections", "trade_wars", "sanctions", "alliances"],
+      "enabled": true
+    },
+    "central_bank_announcements": {
+      "banks": ["FED", "ECB", "BOJ", "BOE", "PBOC"],
+      "types": ["rate_decisions", "policy_statements", "minutes"],
+      "enabled": true
+    },
+    "earnings_calendar": {
+      "sources": ["YAHOO_FINANCE", "ALPHA_VANTAGE"],
+      "enabled": true
+    },
+    "insider_trading": {
+      "sources": ["SEC_EDGAR", "OPENINSIDER"],
+      "enabled": true
+    },
+    "options_flow": {
+      "sources": ["CBOE", "OPRA"],
+      "enabled": true
+    },
+    "short_interest": {
+      "sources": ["FINRA", "MARKETWATCH"],
+      "enabled": true
+    },
+    "institutional_holdings": {
+      "sources": ["SEC_13F", "BLOOMBERG"],
+      "enabled": true
+    },
+    "supply_chain_data": {
+      "sources": ["BLOOMBERG", "REUTERS"],
+      "metrics": ["shipping_costs", "inventory_levels", "delivery_times"],
+      "enabled": true
+    },
+    "energy_markets": {
+      "sources": ["EIA", "IEA", "OPEC"],
+      "metrics": ["crude_oil_inventory", "natural_gas_storage", "refinery_utilization"],
+      "enabled": true
+    },
+    "real_estate": {
+      "sources": ["CASE_SHILLER", "ZILLOW", "REDFIN"],
+      "metrics": ["home_prices", "inventory", "days_on_market", "mortgage_rates"],
+      "enabled": true
+    }
+  },
+  "crawling": {
+    "max_concurrent": 15,
+    "rate_limit": 0.05,
+    "retry_attempts": 5,
+    "timeout": 45,
+    "auto_retry_failed": true,
+    "smart_retry": true
+  },
+  "storage": {
+    "database": "comprehensive_financial_data.db",
+    "backup_interval": "6h",
+    "max_data_age": "10y",
+    "compression": true,
+    "partitioning": true
+  },
+  "extensibility": {
+    "custom_data_sources": true,
+    "plugin_system": true,
+    "api_key_management": true,
+    "dynamic_config_reload": true
+  }
+}

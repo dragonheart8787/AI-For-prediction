@@ -1,0 +1,10 @@
+{
+  "model_key": "arima",
+  "name": "ARIMA",
+  "description": "自回歸積分移動平均模型",
+  "type": "classical",
+  "source": "local",
+  "install_time": "2025-08-29 12:01:44",
+  "status": "installed",
+  "note": "本地統計模型，可直接使用"
+}

@@ -1,0 +1,11 @@
+[project]
+name = "predict-ai"
+version = "0.9.0"
+description = "Multi-source time-series crawl, align, train, and optional HTTP inference"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+# 安裝依賴仍以 requirements-core.txt / requirements-automl.txt 為準（CI 與慣例）
+
+[project.urls]
+Changelog = "CHANGELOG.md"

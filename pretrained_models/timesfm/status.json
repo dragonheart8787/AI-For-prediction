@@ -1,0 +1,12 @@
+{
+  "model_key": "timesfm",
+  "name": "Local TimesFM",
+  "description": "本地創建的 零訓練時間序列預測模型",
+  "type": "zero_shot",
+  "architecture": "transformer",
+  "input_size": 512,
+  "output_size": 1,
+  "created_time": "2025-08-28 12:10:00",
+  "status": "local_created",
+  "is_local": true
+}

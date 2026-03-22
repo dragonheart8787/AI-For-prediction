@@ -1,0 +1,10 @@
+{
+  "model_key": "prophet",
+  "name": "Prophet",
+  "description": "Facebook時間序列預測模型",
+  "type": "classical",
+  "source": "local",
+  "install_time": "2025-08-28 15:34:49",
+  "status": "installed",
+  "note": "本地統計模型，可直接使用"
+}

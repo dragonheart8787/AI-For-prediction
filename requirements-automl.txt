@@ -1,0 +1,3 @@
+# 選用：AutoML（Optuna）與 PyTorch 深度模型（mlp_torch / lstm / transformer）
+optuna>=3.0.0
+torch>=2.0.0

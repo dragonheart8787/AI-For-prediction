@@ -1,0 +1,360 @@
+{
+  "timestamp": "2025-08-05T16:56:43.521121",
+  "steps": {
+    "step1_real_prediction": {
+      "financial_股票投資決策": {
+        "timestamp": "2025-08-05T16:56:43.535125",
+        "domain": "financial",
+        "request_type": "股票投資決策",
+        "model_used": "financial_lstm",
+        "input_data": {
+          "AAPL": {
+            "price": 78.36817250943719,
+            "volume": 1182666.0825178928,
+            "change": 0.004525429003573218,
+            "price_change": 0.004525429003573218,
+            "volume_change": -0.15063542648768868,
+            "high_low_ratio": 1.0409986911685118,
+            "price_range": 2.73175105411849,
+            "sma_5": 73.55574079816236,
+            "sma_10": 79.64290157600341,
+            "rsi": 66.02494303813087
+          },
+          "GOOGL": {
+            "price": 117.83308629657678,
+            "volume": 854510.5207202059,
+            "change": 0.07730167094710062,
+            "price_change": 0.07730167094710062,
+            "volume_change": 0.15750432866747283,
+            "high_low_ratio": 0.9578310825260021,
+            "price_range": 4.7717435687147125,
+            "sma_5": 119.56490876987876,
+            "sma_10": 122.32182733337781,
+            "rsi": 81.3706181806359
+          },
+          "MSFT": {
+            "price": 91.2501440927727,
+            "volume": 1106923.328485873,
+            "change": -0.06860389634329118,
+            "price_change": -0.06860389634329118,
+            "volume_change": -0.12785093511673287,
+            "high_low_ratio": 0.7936973156855647,
+            "price_range": 3.0204892334115025,
+            "sma_5": 91.2598509715409,
+            "sma_10": 92.13238637210186,
+            "rsi": 38.21176216587574
+          },
+          "TSLA": {
+            "price": 76.34157383625463,
+            "volume": 847843.7450426652,
+            "change": 0.07375050185203533,
+            "price_change": 0.07375050185203533,
+            "volume_change": -0.004092198402814982,
+            "high_low_ratio": 0.8755693477615047,
+            "price_range": 14.053696877553374,
+            "sma_5": 73.32857343841735,
+            "sma_10": 77.99907199871419,
+            "rsi": 45.35345464229599
+          },
+          "AMZN": {
+            "price": 100.41169530060084,
+            "volume": 1185796.9040702903,
+            "change": -0.034789013443993565,
+            "price_change": -0.034789013443993565,
+            "volume_change": -0.005750541770588496,
+            "high_low_ratio": 1.113274243596545,
+            "price_range": 5.833680981535835,
+            "sma_5": 100.80291224461573,
+            "sma_10": 99.5901527765056,
+            "rsi": 24.050111933638313
+          }
+        },
+        "prediction": [
+          [
+            -0.7482106902329482
+          ]
+        ],
+        "confidence": 0.6,
+        "fusion_result": {
+          "fused_prediction": [
+            [
+              -0.7482106902329482
+            ]
+          ],
+          "confidence": 0.66,
+          "weights": [
+            1.0
+          ],
+          "model_count": 1
+        },
+        "additional_context": "",
+        "data_source": "dynamic_crawler",
+        "analysis_notes": "分析報告 - financial - 股票投資決策\n時間: 2025-08-05T16:56:43.535125\n模型: financial_lstm\n預測值: -0.7482\n信心度: 60.00%\n\n分析要點:\n1. 使用financial_lstm模型進行預測\n2. 信心度為60.00%，較低\n3. 預測結果顯示負面趨勢\n4. 建議根據信心度調整決策權重"
+      },
+      "weather_天氣預報": {
+        "timestamp": "2025-08-05T16:56:43.556127",
+        "domain": "weather",
+        "request_type": "天氣預報",
+        "model_used": "weather_transformer",
+        "input_data": {
+          "temperature": 3.8801215261624193,
+          "humidity": 27.88578593580577,
+          "pressure": 1009.6982994196251,
+          "wind_speed": 9.274007183544942,
+          "temp_humidity_ratio": 0.3521860812281526,
+          "pressure_change": -2.633956297229811,
+          "wind_direction": 174.24474576482956
+        },
+        "prediction": [
+          [
+            -0.515495198330418
+          ]
+        ],
+        "confidence": 0.6,
+        "fusion_result": {
+          "fused_prediction": [
+            [
+              -0.515495198330418
+            ]
+          ],
+          "confidence": 0.66,
+          "weights": [
+            1.0
+          ],
+          "model_count": 1
+        },
+        "additional_context": "",
+        "data_source": "dynamic_crawler",
+        "analysis_notes": "分析報告 - weather - 天氣預報\n時間: 2025-08-05T16:56:43.556127\n模型: weather_transformer\n預測值: -0.5155\n信心度: 60.00%\n\n分析要點:\n1. 使用weather_transformer模型進行預測\n2. 信心度為60.00%，較低\n3. 預測結果顯示負面趨勢\n4. 建議根據信心度調整決策權重"
+      },
+      "medical_疾病傳播預測": {
+        "timestamp": "2025-08-05T16:56:43.580383",
+        "domain": "medical",
+        "request_type": "疾病傳播預測",
+        "model_used": "medical_lstm",
+        "input_data": {
+          "cases": 1155,
+          "deaths": 54,
+          "recovered": 1065,
+          "mortality_rate": 0.046753246753246755,
+          "recovery_rate": 0.922077922077922,
+          "cases_change": 56.70127078560348,
+          "active_cases": 36
+        },
+        "prediction": [
+          [
+            0.337658076838335
+          ]
+        ],
+        "confidence": 0.6,
+        "fusion_result": {
+          "fused_prediction": [
+            [
+              0.337658076838335
+            ]
+          ],
+          "confidence": 0.66,
+          "weights": [
+            1.0
+          ],
+          "model_count": 1
+        },
+        "additional_context": "",
+        "data_source": "dynamic_crawler",
+        "analysis_notes": "分析報告 - medical - 疾病傳播預測\n時間: 2025-08-05T16:56:43.580383\n模型: medical_lstm\n預測值: 0.3377\n信心度: 60.00%\n\n分析要點:\n1. 使用medical_lstm模型進行預測\n2. 信心度為60.00%，較低\n3. 預測結果顯示正面趨勢\n4. 建議根據信心度調整決策權重"
+      },
+      "energy_能源需求預測": {
+        "timestamp": "2025-08-05T16:56:43.601382",
+        "domain": "energy",
+        "request_type": "能源需求預測",
+        "model_used": "energy_transformer",
+        "input_data": {
+          "demand": 940.0811213503474,
+          "supply": 978.8906788630155,
+          "price": 41.71353777281566,
+          "supply_demand_ratio": 1.0412832005996688,
+          "price_change": -0.049231799857611516,
+          "storage_level": 72.45624111607114,
+          "efficiency": 0.9158044352733883
+        },
+        "prediction": [
+          [
+            -0.21582207689477306
+          ]
+        ],
+        "confidence": 0.6,
+        "fusion_result": {
+          "fused_prediction": [
+            [
+              -0.21582207689477306
+            ]
+          ],
+          "confidence": 0.66,
+          "weights": [
+            1.0
+          ],
+          "model_count": 1
+        },
+        "additional_context": "",
+        "data_source": "dynamic_crawler",
+        "analysis_notes": "分析報告 - energy - 能源需求預測\n時間: 2025-08-05T16:56:43.601382\n模型: energy_transformer\n預測值: -0.2158\n信心度: 60.00%\n\n分析要點:\n1. 使用energy_transformer模型進行預測\n2. 信心度為60.00%，較低\n3. 預測結果顯示負面趨勢\n4. 建議根據信心度調整決策權重"
+      }
+    },
+    "step2_dynamic_data": {
+      "financial": {
+        "data_keys": [
+          "price_change",
+          "volume_change",
+          "high_low_ratio",
+          "price_range",
+          "sma_5",
+          "sma_10",
+          "rsi"
+        ],
+        "data_sample": {
+          "price_change": -0.0637390917412548,
+          "volume_change": 0.04496593796737604,
+          "high_low_ratio": 1.1929391918611398
+        }
+      },
+      "weather": {
+        "data_keys": [
+          "temperature",
+          "humidity",
+          "pressure",
+          "wind_speed",
+          "temp_humidity_ratio",
+          "pressure_change",
+          "wind_direction"
+        ],
+        "data_sample": {
+          "temperature": 26.721713771752576,
+          "humidity": 84.29877241360617,
+          "pressure": 1009.816046690808
+        }
+      },
+      "medical": {
+        "data_keys": [
+          "cases",
+          "deaths",
+          "recovered",
+          "mortality_rate",
+          "recovery_rate",
+          "cases_change",
+          "active_cases"
+        ],
+        "data_sample": {
+          "cases": 147,
+          "deaths": 7,
+          "recovered": 127
+        }
+      },
+      "energy": {
+        "data_keys": [
+          "demand",
+          "supply",
+          "price",
+          "supply_demand_ratio",
+          "price_change",
+          "storage_level",
+          "efficiency"
+        ],
+        "data_sample": {
+          "demand": 98.35323607931966,
+          "supply": 96.76354348426068,
+          "price": 50.89140390125046
+        }
+      }
+    },
+    "step3_analysis_memory": {
+      "memory_count": 4,
+      "recent_analyses": [
+        {
+          "id": 4,
+          "timestamp": "2025-08-05T16:56:43.601382",
+          "domain": "energy",
+          "request_type": "能源需求預測",
+          "input_data": {
+            "demand": 940.0811213503474,
+            "supply": 978.8906788630155,
+            "price": 41.71353777281566,
+            "supply_demand_ratio": 1.0412832005996688,
+            "price_change": -0.049231799857611516,
+            "storage_level": 72.45624111607114,
+            "efficiency": 0.9158044352733883
+          },
+          "prediction_result": [
+            [
+              -0.21582207689477306
+            ]
+          ],
+          "confidence": 0.6,
+          "model_used": "energy_transformer",
+          "data_source": "dynamic_crawler",
+          "analysis_notes": ""
+        },
+        {
+          "id": 3,
+          "timestamp": "2025-08-05T16:56:43.580383",
+          "domain": "medical",
+          "request_type": "疾病傳播預測",
+          "input_data": {
+            "cases": 1155,
+            "deaths": 54,
+            "recovered": 1065,
+            "mortality_rate": 0.046753246753246755,
+            "recovery_rate": 0.922077922077922,
+            "cases_change": 56.70127078560348,
+            "active_cases": 36
+          },
+          "prediction_result": [
+            [
+              0.337658076838335
+            ]
+          ],
+          "confidence": 0.6,
+          "model_used": "medical_lstm",
+          "data_source": "dynamic_crawler",
+          "analysis_notes": ""
+        },
+        {
+          "id": 2,
+          "timestamp": "2025-08-05T16:56:43.556127",
+          "domain": "weather",
+          "request_type": "天氣預報",
+          "input_data": {
+            "temperature": 3.8801215261624193,
+            "humidity": 27.88578593580577,
+            "pressure": 1009.6982994196251,
+            "wind_speed": 9.274007183544942,
+            "temp_humidity_ratio": 0.3521860812281526,
+            "pressure_change": -2.633956297229811,
+            "wind_direction": 174.24474576482956
+          },
+          "prediction_result": [
+            [
+              -0.515495198330418
+            ]
+          ],
+          "confidence": 0.6,
+          "model_used": "weather_transformer",
+          "data_source": "dynamic_crawler",
+          "analysis_notes": ""
+        }
+      ]
+    },
+    "step4_system_status": {
+      "loaded_models": [],
+      "analysis_memory_count": 4,
+      "database_path": "./agi_storage/agi_enhanced.db",
+      "model_directory": "./agi_storage/models"
+    }
+  },
+  "summary": {
+    "total_predictions": 4,
+    "successful_predictions": 4,
+    "average_confidence": 0.6,
+    "memory_entries": 4,
+    "status": "completed"
+  }
+}

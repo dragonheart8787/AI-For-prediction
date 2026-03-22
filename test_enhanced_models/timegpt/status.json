@@ -1,0 +1,12 @@
+{
+  "model_key": "timegpt",
+  "name": "TimeGPT",
+  "description": "Nixtla零訓練時間序列預測模型",
+  "type": "zero_shot",
+  "source": "huggingface",
+  "model_id": "microsoft/DialoGPT-medium",
+  "config_url": "https://huggingface.co/microsoft/DialoGPT-medium/resolve/main/config.json",
+  "download_time": "2025-08-28 15:34:35",
+  "status": "config_downloaded",
+  "note": "配置文件已下載，來源: https://huggingface.co/microsoft/DialoGPT-medium/resolve/main/config.json"
+}

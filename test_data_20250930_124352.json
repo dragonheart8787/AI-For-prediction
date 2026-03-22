@@ -1,0 +1,156 @@
+[
+  {
+    "ok": true,
+    "model": "xgboost",
+    "rows": 114,
+    "batch": 114,
+    "onnx": false,
+    "execution_time": 14.6943359375,
+    "success": true,
+    "error": null,
+    "test_config": {
+      "model": "auto",
+      "batch_size": 1024
+    }
+  },
+  {
+    "ok": true,
+    "model": "xgboost",
+    "rows": 114,
+    "batch": 114,
+    "onnx": false,
+    "execution_time": 6.909944534301758,
+    "success": true,
+    "error": null,
+    "test_config": {
+      "model": "auto",
+      "batch_size": 2048
+    }
+  },
+  {
+    "ok": true,
+    "model": "xgboost",
+    "rows": 114,
+    "batch": 114,
+    "onnx": false,
+    "execution_time": 10.17623257637024,
+    "success": true,
+    "error": null,
+    "test_config": {
+      "model": "auto",
+      "batch_size": 4096
+    }
+  },
+  {
+    "ok": true,
+    "model": "xgboost",
+    "rows": 114,
+    "batch": 114,
+    "onnx": false,
+    "execution_time": 8.045806646347046,
+    "success": true,
+    "error": null,
+    "test_config": {
+      "model": "auto",
+      "batch_size": 8192
+    }
+  },
+  {
+    "ok": true,
+    "model": "xgboost",
+    "rows": 114,
+    "batch": 114,
+    "onnx": false,
+    "execution_time": 5.967733383178711,
+    "success": true,
+    "error": null,
+    "test_config": {
+      "model": "xgboost",
+      "batch_size": 1024
+    }
+  },
+  {
+    "ok": true,
+    "model": "xgboost",
+    "rows": 114,
+    "batch": 114,
+    "onnx": false,
+    "execution_time": 7.057582855224609,
+    "success": true,
+    "error": null,
+    "test_config": {
+      "model": "xgboost",
+      "batch_size": 4096
+    }
+  },
+  {
+    "ok": true,
+    "model": "xgboost",
+    "rows": 114,
+    "batch": 114,
+    "onnx": false,
+    "execution_time": 6.885030746459961,
+    "success": true,
+    "error": null,
+    "test_config": {
+      "model": "xgboost",
+      "batch_size": 8192
+    }
+  },
+  {
+    "ok": true,
+    "model": "lightgbm",
+    "rows": 114,
+    "batch": 114,
+    "onnx": false,
+    "execution_time": 5.70610237121582,
+    "success": true,
+    "error": null,
+    "test_config": {
+      "model": "lightgbm",
+      "batch_size": 1024
+    }
+  },
+  {
+    "ok": true,
+    "model": "lightgbm",
+    "rows": 114,
+    "batch": 114,
+    "onnx": false,
+    "execution_time": 6.226071119308472,
+    "success": true,
+    "error": null,
+    "test_config": {
+      "model": "lightgbm",
+      "batch_size": 4096
+    }
+  },
+  {
+    "ok": true,
+    "model": "linear",
+    "rows": 114,
+    "batch": 114,
+    "onnx": false,
+    "execution_time": 5.5936243534088135,
+    "success": true,
+    "error": null,
+    "test_config": {
+      "model": "linear",
+      "batch_size": 1024
+    }
+  },
+  {
+    "ok": true,
+    "model": "linear",
+    "rows": 114,
+    "batch": 114,
+    "onnx": false,
+    "execution_time": 4.924598932266235,
+    "success": true,
+    "error": null,
+    "test_config": {
+      "model": "linear",
+      "batch_size": 4096
+    }
+  }
+]

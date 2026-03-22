@@ -1,0 +1,31 @@
+{
+  "timestamp": "2025-03-15",
+  "suite": "test_unified_predict",
+  "summary": {
+    "total": 42,
+    "passed": 42,
+    "failed": 0,
+    "skipped": 0,
+    "success_rate": 1.0
+  },
+  "categories": {
+    "fit_predict": 6,
+    "multi_horizon": 1,
+    "predict_many": 3,
+    "input_formats": 4,
+    "validation": 2,
+    "normalization": 2,
+    "evaluate": 2,
+    "persistence": 3,
+    "caching": 2,
+    "lru_cache": 3,
+    "token_bucket": 2,
+    "confidence": 3,
+    "onnx": 2,
+    "model_info": 2,
+    "horizons": 2,
+    "fallback": 1,
+    "end_to_end": 2
+  },
+  "status": "all_passed"
+}

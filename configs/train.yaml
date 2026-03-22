@@ -1,0 +1,135 @@
+# 訓練配置文件
+# 整合編譯器、VLM、優化器等功能的完整配置
+
+# 基本設定
+model:
+  name: "custom_model"
+  type: "transformer"  # transformer, vlm, lstm, cnn
+  architecture: "bert-base-uncased"
+
+# 數據設定
+data:
+  dataset_path: "./data"
+  batch_size: 16
+  num_workers: 4
+  pin_memory: true
+  persistent_workers: true
+  prefetch_factor: 4
+
+# 編譯器設定
+compiler:
+  enable_torch_compile: true
+  torch_compile_backend: "inductor"  # inductor, aot_eager, nvfuser
+  torch_compile_mode: "max-autotune"  # default, reduce-overhead, max-autotune
+  torch_compile_fullgraph: true
+  use_channels_last: true
+  enable_openxla: false
+  enable_tvm: false
+  target_device: "auto"  # auto, cuda, cpu
+
+# AMP 設定
+amp:
+  enable_amp: true
+  dtype: "auto"  # auto, bf16, fp16, fp32
+  use_grad_scaler: true
+  prefer_bf16: true
+  use_autocast: true
+  cache_enabled: true
+
+# 優化器設定
+optimizer:
+  optimizer_type: "adamw"  # adamw, sgd, sgd_momentum, adagrad, rmsprop
+  learning_rate: 0.0002
+  weight_decay: 0.0001
+  momentum: 0.9
+  nesterov: false
+
+# 學習率調度器設定
+scheduler:
+  scheduler_type: "warmup_cosine"  # cosine, step, exponential, plateau, warmup_cosine
+  warmup_epochs: 5
+  total_epochs: 100
+  step_size: 30
+  gamma: 0.1
+  min_lr: 0.000001
+
+# 分散式訓練設定
+distributed:
+  enable_ddp: false
+  enable_fsdp: false
+  backend: "nccl"  # nccl, gloo
+  ddp_find_unused_parameters: false
+  ddp_gradient_as_bucket_view: true
+  fsdp_min_num_params: 1000000
+  fsdp_sharding_strategy: "FULL_SHARD"  # FULL_SHARD, SHARD_GRAD_OP, NO_SHARD
+  fsdp_use_orig_params: true
+
+# VLM 設定（僅當 model.type 為 vlm 時使用）
+vlm:
+  vision_encoder_type: "resnet"  # resnet, vit, clip
+  text_encoder_type: "transformer"  # transformer, bert
+  fusion_type: "cross_attention"  # cross_attention, concat, mlp
+  vision_dim: 2048
+  text_dim: 768
+  hidden_dim: 1024
+  num_heads: 8
+  num_layers: 6
+  max_seq_length: 512
+  image_size: 224
+  patch_size: 16
+
+# 訓練設定
+training:
+  epochs: 100
+  save_interval: 10
+  eval_interval: 5
+  log_interval: 100
+  gradient_clipping:
+    enabled: true
+    max_norm: 1.0
+    norm_type: 2.0
+  early_stopping:
+    enabled: true
+    patience: 10
+    min_delta: 1e-4
+
+# 輸出設定
+output:
+  model_dir: "./checkpoints"
+  log_dir: "./logs"
+  tensorboard_dir: "./runs"
+  export_format: "hf"  # hf, onnx, trtllm
+
+# 推論服務設定
+serving:
+  vllm:
+    enabled: false
+    port: 8000
+    host: "0.0.0.0"
+    gpu_memory_utilization: 0.9
+    max_model_len: 4096
+  sglang:
+    enabled: false
+    port: 30000
+    host: "0.0.0.0"
+    memory_fraction: 0.9
+    max_num_seqs: 256
+  trtllm:
+    enabled: false
+    port: 9000
+    host: "0.0.0.0"
+    dtype: "fp16"  # fp16, fp8, int8
+
+# 硬體設定
+hardware:
+  device: "auto"  # auto, cuda, cpu
+  num_gpus: 1
+  mixed_precision: true
+  compile_model: true
+
+# 日誌設定
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "./logs/training.log"
+  console: true

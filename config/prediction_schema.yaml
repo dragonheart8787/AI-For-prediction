@@ -1,0 +1,269 @@
+# 預測任務資料需求定義
+# 定義「預測什麼」需要「爬取什麼資料」以及「如何轉成 X/y」
+version: 1
+
+# 管線預設（可被 CLI 覆寫）
+pipeline_defaults:
+  # 多源對齊預設（任務級可覆寫：time_granularity, join_strategy, join_tolerance, missing_policy, prevent_leakage）
+  align_defaults:
+    freq: "1D"
+    join_strategy: "left"
+    tolerance: "36h"
+    missing_policy: "ffill"
+    prevent_leakage: true
+  walk_forward:
+    n_splits: 3
+    test_size: 12
+    purge_gap: 1
+    min_train_size: 15
+  experiment_log:
+    path: data/experiment_runs.jsonl
+    enabled: true
+
+# 通用特徵對應（用於跨任務泛化，未出現的欄位填 0）
+canonical_features: [open, high, low, close, volume, sentiment, temperature_2m, relative_humidity_2m, value, new_cases, new_deaths]
+
+prediction_tasks:
+  # ========== 金融 - 股票 ==========
+  stock_price_next:
+    display_name: 股價下一日預測
+    prevent_leakage: true   # 多源對齊時禁止 bfill，避免未來資訊倒灌
+    domain: financial
+    target_column: close_next      # 目標：下一日收盤價（由 close 延遲產生）
+    target_source: close           # 從 close 欄位衍生
+    target_horizon: 1              # 預測 1 步後
+    # 設 enabled: true 可預設開啟滯後／滾動特徵；或訓練時加 --rich-features
+    feature_expansion:
+      enabled: false
+      lag_steps: [1, 2, 3, 5]
+      rolling_windows: [3, 5]
+    data_sources:
+      - connector: yahoo
+        params:
+          symbol: AAPL
+          period: 3mo
+          interval: 1d
+        features: [open, high, low, close, volume]  # 當作 X 的特徵
+        exclude: [symbol]           # 排除的欄位
+
+  stock_return:
+    display_name: 股票報酬率預測
+    domain: financial
+    target_column: return
+    target_source: close
+    target_horizon: 1
+    data_sources:
+      - connector: yahoo
+        params:
+          symbol: AAPL
+          period: 6mo
+        features: [open, high, low, close, volume]
+
+  # ========== 天氣預測 ==========
+  temperature_next:
+    display_name: 氣溫下一時段預測
+    domain: weather
+    target_column: temperature_next
+    target_source: temperature_2m
+    target_horizon: 1
+    data_sources:
+      - connector: open_meteo
+        params:
+          latitude: 25.04
+          longitude: 121.56
+          hourly: [temperature_2m, relative_humidity_2m]
+          past_days: 7
+          forecast_days: 0
+        features: [temperature_2m, relative_humidity_2m]
+        exclude: [lat, lon]
+
+  # ========== 能源預測 ==========
+  energy_demand_next:
+    display_name: 能源需求預測
+    domain: energy
+    target_column: value_next
+    target_source: value
+    target_horizon: 1
+    data_sources:
+      - connector: eia
+        params:
+          series_id: PET.WCESTUS1.W
+        features: [value]
+
+  # ========== 新聞/情感預測 ==========
+  news_sentiment_next:
+    display_name: 新聞情感趨勢預測
+    domain: financial
+    target_column: sentiment_next
+    target_source: sentiment
+    target_horizon: 1
+    data_sources:
+      - connector: newsapi
+        params:
+          q: market
+        features: [sentiment, title]  # title 會 hash 編碼
+
+  # ========== 疾病傳播預測 ==========
+  covid_cases_next:
+    display_name: 新增病例預測
+    domain: medical
+    target_column: new_cases_next
+    target_source: new_cases
+    target_horizon: 1
+    data_sources:
+      - connector: owid
+        params:
+          country_code: TW
+        features: [new_cases, new_deaths]
+
+  # ========== 綜合多源預測 ==========
+  multi_source_price:
+    display_name: 多源股價預測（金融+新聞）
+    domain: financial
+    target_column: close_next
+    target_source: close
+    target_horizon: 1
+    time_granularity: "1D"
+    join_strategy: left
+    join_tolerance: "36h"
+    missing_policy: ffill
+    target_source_connector: yahoo
+    data_sources:
+      - connector: yahoo
+        params:
+          symbol: AAPL
+          period: 2mo
+        features: [open, high, low, close, volume]
+      - connector: newsapi
+        params:
+          q: AAPL
+        features: [sentiment]
+
+  # ========== 加密貨幣 ==========
+  crypto_btc_next:
+    display_name: 比特幣價格預測
+    domain: financial
+    target_column: close_next
+    target_source: close
+    target_horizon: 1
+    data_sources:
+      - connector: yahoo
+        params:
+          symbol: BTC-USD
+          period: 3mo
+        features: [open, high, low, close, volume]
+
+  crypto_eth_next:
+    display_name: 以太坊價格預測
+    domain: financial
+    target_column: close_next
+    target_source: close
+    target_horizon: 1
+    data_sources:
+      - connector: yahoo
+        params:
+          symbol: ETH-USD
+          period: 3mo
+        features: [open, high, low, close, volume]
+
+  # ========== 外匯 ==========
+  forex_usdjpy_next:
+    display_name: 美元日圓匯率預測
+    domain: financial
+    target_column: close_next
+    target_source: close
+    target_horizon: 1
+    data_sources:
+      - connector: yahoo
+        params:
+          symbol: USDJPY=X
+          period: 3mo
+        features: [open, high, low, close, volume]
+
+  forex_eurusd_next:
+    display_name: 歐元美元匯率預測
+    domain: financial
+    target_column: close_next
+    target_source: close
+    target_horizon: 1
+    data_sources:
+      - connector: yahoo
+        params:
+          symbol: EURUSD=X
+          period: 3mo
+        features: [open, high, low, close, volume]
+
+  # ========== 商品 ==========
+  gold_price_next:
+    display_name: 黃金價格預測
+    domain: financial
+    target_column: close_next
+    target_source: close
+    target_horizon: 1
+    data_sources:
+      - connector: yahoo
+        params:
+          symbol: GC=F
+          period: 3mo
+        features: [open, high, low, close, volume]
+
+  oil_price_next:
+    display_name: 原油價格預測
+    domain: energy
+    target_column: close_next
+    target_source: close
+    target_horizon: 1
+    data_sources:
+      - connector: yahoo
+        params:
+          symbol: CL=F
+          period: 3mo
+        features: [open, high, low, close, volume]
+
+  # ========== 指數 ==========
+  sp500_next:
+    display_name: 標普500指數預測
+    domain: financial
+    target_column: close_next
+    target_source: close
+    target_horizon: 1
+    data_sources:
+      - connector: yahoo
+        params:
+          symbol: ^GSPC
+          period: 3mo
+        features: [open, high, low, close, volume]
+
+  twii_next:
+    display_name: 台灣加權指數預測
+    domain: financial
+    target_column: close_next
+    target_source: close
+    target_horizon: 1
+    data_sources:
+      - connector: yahoo
+        params:
+          symbol: ^TWII
+          period: 3mo
+        features: [open, high, low, close, volume]
+
+  nasdaq_next:
+    display_name: 那斯達克指數預測
+    domain: financial
+    target_column: close_next
+    target_source: close
+    target_horizon: 1
+    data_sources:
+      - connector: yahoo
+        params:
+          symbol: ^IXIC
+          period: 3mo
+        features: [open, high, low, close, volume]
+
+# 資料來源對應（connector 名稱 -> 模組路徑）
+connector_registry:
+  yahoo: data_connectors.yahoo.YahooFinanceConnector
+  eia: data_connectors.eia.EIAConnector
+  newsapi: data_connectors.newsapi.NewsAPIConnector
+  open_meteo: data_connectors.open_meteo.OpenMeteoConnector
+  owid: data_connectors.owid.OWIDConnector

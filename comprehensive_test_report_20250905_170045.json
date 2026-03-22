@@ -1,0 +1,72 @@
+{
+  "test_info": {
+    "start_time": "2025-09-05T17:00:27.227311",
+    "end_time": "2025-09-05T17:00:45.584185",
+    "duration_seconds": 18.356874,
+    "total_tests": 9,
+    "passed_tests": 4,
+    "failed_tests": 5,
+    "success_rate": 44.44444444444444
+  },
+  "test_results": {
+    "basic_imports": {
+      "passed": true,
+      "message": "所有基礎導入測試通過",
+      "timestamp": "2025-09-05T17:00:36.013799"
+    },
+    "automl_functionality": {
+      "passed": false,
+      "message": "AutoML 功能測試失敗: No module named 'ray.tune.suggest'",
+      "timestamp": "2025-09-05T17:00:36.026792"
+    },
+    "xai_functionality": {
+      "passed": false,
+      "message": "XAI 功能測試失敗: No module named 'shap'",
+      "timestamp": "2025-09-05T17:00:36.035796"
+    },
+    "multi_agent_functionality": {
+      "passed": false,
+      "message": "多代理系統功能測試失敗: 沒有代理成功完成預測",
+      "timestamp": "2025-09-05T17:00:36.039794"
+    },
+    "external_data_fusion": {
+      "passed": false,
+      "message": "外部數據融合功能測試失敗: invalid syntax (external_data_fusion.py, line 359)",
+      "timestamp": "2025-09-05T17:00:36.043795"
+    },
+    "cpu_optimization": {
+      "passed": false,
+      "message": "CPU 優化功能測試失敗: No module named 'modin'",
+      "timestamp": "2025-09-05T17:00:36.054793"
+    },
+    "integrated_system": {
+      "passed": true,
+      "message": "整合系統功能正常，集成分數: 0.8184",
+      "timestamp": "2025-09-05T17:00:45.567168"
+    },
+    "docker_deployment": {
+      "passed": true,
+      "message": "Docker 部署功能正常",
+      "timestamp": "2025-09-05T17:00:45.569168"
+    },
+    "launch_system": {
+      "passed": true,
+      "message": "系統啟動功能正常",
+      "timestamp": "2025-09-05T17:00:45.584185"
+    }
+  },
+  "summary": {
+    "overall_status": "FAIL",
+    "critical_failures": [
+      "automl_functionality",
+      "xai_functionality",
+      "multi_agent_functionality",
+      "external_data_fusion",
+      "cpu_optimization"
+    ],
+    "recommendations": [
+      "檢查失敗的測試模組，確保所有依賴包已正確安裝",
+      "Docker 部署功能正常，可以進行容器化部署"
+    ]
+  }
+}

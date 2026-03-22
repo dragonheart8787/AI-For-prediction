@@ -1,0 +1,156 @@
+# Enhanced AGI Deep Learning Prediction System - 完整依賴列表
+
+# 核心依賴
+numpy>=1.21.0
+pandas>=1.3.0
+asyncio>=3.4.3
+dataclasses>=0.8
+typing-extensions>=4.0.0
+
+# 深度學習框架 (主要)
+torch>=1.12.0
+torchvision>=0.13.0
+torchaudio>=0.12.0
+tensorflow>=2.8.0
+keras>=2.8.0
+
+# 機器學習庫
+scikit-learn>=1.0.0
+xgboost>=1.6.0
+lightgbm>=3.3.0
+
+# 數據處理和分析
+scipy>=1.8.0
+matplotlib>=3.5.0
+seaborn>=0.11.0
+plotly>=5.10.0
+
+# 自動機器學習
+optuna>=3.0.0
+hyperopt>=0.2.7
+auto-sklearn>=0.15.0
+
+# 時間序列專用
+prophet>=1.1.0
+statsmodels>=0.13.0
+arch>=5.3.0
+pyflux>=0.4.17
+
+# 深度學習專用庫
+transformers>=4.20.0
+pytorch-lightning>=1.6.0
+tensorboard>=2.8.0
+wandb>=0.12.0
+
+# 圖神經網路
+torch-geometric>=2.1.0
+dgl>=0.9.0
+networkx>=2.8.0
+
+# 計算機視覺 (醫療影像)
+opencv-python>=4.6.0
+pillow>=9.2.0
+albumentations>=1.2.0
+
+# 自然語言處理
+nltk>=3.7
+spacy>=3.4.0
+gensim>=4.2.0
+
+# 數據庫和存儲
+sqlite3  # 內建
+sqlalchemy>=1.4.0
+redis>=4.3.0
+pymongo>=4.2.0
+
+# 網路請求和API
+requests>=2.28.0
+httpx>=0.23.0
+aiohttp>=3.8.0
+fastapi>=0.78.0
+uvicorn>=0.18.0
+
+# 金融數據
+yfinance>=0.1.70
+alpha-vantage>=2.3.1
+pandas-datareader>=0.10.0
+ccxt>=1.90.0
+
+# 天氣數據
+pyowm>=3.3.0
+meteopy>=1.0.0
+
+# 醫療數據處理
+pydicom>=2.3.0
+nibabel>=4.0.0
+SimpleITK>=2.2.0
+
+# 並行處理和優化
+joblib>=1.1.0
+dask>=2022.7.0
+ray>=2.0.0
+numba>=0.56.0
+
+# 模型部署
+mlflow>=1.28.0
+docker>=6.0.0
+kubernetes>=24.2.0
+
+# 監控和日誌
+loguru>=0.6.0
+prometheus-client>=0.14.0
+grafana-api>=1.0.3
+
+# 實驗追蹤
+neptune-client>=0.16.0
+comet-ml>=3.31.0
+
+# 數據版本控制
+dvc>=2.12.0
+pachyderm>=2.3.0
+
+# 配置管理
+hydra-core>=1.2.0
+omegaconf>=2.2.0
+pyyaml>=6.0
+python-dotenv>=0.20.0
+
+# 測試框架
+pytest>=7.0.0
+pytest-asyncio>=0.19.0
+pytest-cov>=3.0.0
+
+# 文檔生成
+sphinx>=5.1.0
+mkdocs>=1.3.0
+
+# 代碼質量
+black>=22.6.0
+flake8>=5.0.0
+isort>=5.10.0
+mypy>=0.971
+
+# Jupyter 支持
+jupyter>=1.0.0
+jupyterlab>=3.4.0
+ipywidgets>=7.7.0
+
+# 雲平台支持
+boto3>=1.24.0  # AWS
+google-cloud-storage>=2.5.0  # GCP
+azure-storage-blob>=12.12.0  # Azure
+
+# GPU 加速 (可選)
+cupy>=11.0.0
+rapids-cudf>=22.08.0
+rapids-cuml>=22.08.0
+
+# 特殊用途
+imageio>=2.21.0  # 圖像處理
+librosa>=0.9.0   # 音頻處理
+pydub>=0.25.0    # 音頻操作
+
+# 備註：
+# 1. 根據實際需求選擇安裝，不必全部安裝
+# 2. GPU版本的PyTorch需要根據CUDA版本選擇
+# 3. 某些包可能有系統依賴要求 

@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-core.txt
+
+      - name: Run tests
+        env:
+          PYTHONIOENCODING: utf-8
+          PREDICT_AI_DEMO_FAST: "1"
+        run: |
+          python -m pytest tests/ -q --tb=short
+
+  test-automl-torch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install core + automl/torch
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-core.txt -r requirements-automl.txt
+      - name: Run automl & torch tests
+        env:
+          PYTHONIOENCODING: utf-8
+        run: |
+          python -m pytest tests/test_automl_torch.py -q --tb=short

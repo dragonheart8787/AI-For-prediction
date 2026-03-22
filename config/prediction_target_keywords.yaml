@@ -1,0 +1,141 @@
+# 預測目標關鍵字對應
+# 當使用者提出預測目標時，AI 根據關鍵字判斷需要找什麼資料
+version: 1
+
+# 關鍵字 -> 任務 ID 對應（可多對一，取第一個匹配）
+# 格式：關鍵字列表（任一匹配即對應該任務）
+target_keywords:
+  # 股價、股票相關
+  stock_price_next:
+    - 股價
+    - 股票價格
+    - 收盤價
+    - 股價預測
+    - 預測股價
+    - 明天股價
+    - 下一日股價
+    - stock price
+    - 股價走勢
+    - 股票走勢
+
+  stock_return:
+    - 報酬率
+    - 股票報酬
+    - 投資報酬
+    - 漲跌
+    - 漲跌幅
+    - return
+    - 收益
+
+  # 天氣相關
+  temperature_next:
+    - 氣溫
+    - 溫度
+    - 天氣預測
+    - 預測氣溫
+    - 台北氣溫
+    - 高雄氣溫
+    - temperature
+    - 天氣溫度
+    - 體感溫度
+
+  # 能源相關
+  energy_demand_next:
+    - 能源需求
+    - 能源消耗
+    - 用電量
+    - 石油
+    - 能源價格
+    - energy
+    - 電力需求
+    - 原油
+
+  # 新聞情感
+  news_sentiment_next:
+    - 新聞情感
+    - 市場情緒
+    - 輿情
+    - 新聞趨勢
+    - sentiment
+    - 市場氣氛
+    - 投資情緒
+
+  # 疾病傳播
+  covid_cases_next:
+    - 確診
+    - 新增病例
+    - 疫情
+    - 病例數
+    - covid
+    - 傳染病
+    - 疾病傳播
+    - 感染人數
+
+  # 多源股價（含新聞）
+  multi_source_price:
+    - 股價加新聞
+    - 綜合股價
+    - 多源預測
+    - 股價新聞
+    - 結合新聞的股價
+
+  # 加密貨幣
+  crypto_btc_next:
+    - 比特幣
+    - 比特幣價格
+    - btc
+    - bitcoin
+    - 加密貨幣
+
+  crypto_eth_next:
+    - 以太坊
+    - 以太幣
+    - eth
+    - ethereum
+
+  # 外匯
+  forex_usdjpy_next:
+    - 美元日圓
+    - 日圓匯率
+    - usdjpy
+    - 美金日幣
+
+  forex_eurusd_next:
+    - 歐元美元
+    - 歐元匯率
+    - eurusd
+
+  # 商品
+  gold_price_next:
+    - 黃金
+    - 黃金價格
+    - gold
+    - 金價
+
+  oil_price_next:
+    - 原油
+    - 油價
+    - oil
+    - 石油價格
+
+  # 指數
+  sp500_next:
+    - 標普
+    - 標普500
+    - sp500
+    - s&p500
+
+  twii_next:
+    - 台股
+    - 加權指數
+    - 台灣股市
+    - twii
+    - 大盤
+
+  nasdaq_next:
+    - 那斯達克
+    - nasdaq
+    - 納斯達克
+
+# 預設任務（當無法匹配時）
+default_task: stock_price_next

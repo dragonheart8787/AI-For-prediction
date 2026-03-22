@@ -1,0 +1,81 @@
+
+# SuperFusionAGI 測試報告
+
+**測試時間**: 2025-10-07 12:45:35
+**總測試數**: 7
+**通過**: 0
+**失敗**: 7
+**成功率**: 0.0%
+
+## 測試結果詳情
+
+
+### 測試 1: ❌ 失敗
+**命令**: `pytest tests/test_unified_predict.py -v --tb=short`
+**返回碼**: -1
+
+**錯誤**:
+```
+[WinError 2] 系統找不到指定的檔案。
+```
+
+
+### 測試 2: ❌ 失敗
+**命令**: `pytest tests/test_data_connectors.py -v --tb=short`
+**返回碼**: -1
+
+**錯誤**:
+```
+[WinError 2] 系統找不到指定的檔案。
+```
+
+
+### 測試 3: ❌ 失敗
+**命令**: `pytest tests/test_onnx_integration.py -v --tb=short`
+**返回碼**: -1
+
+**錯誤**:
+```
+[WinError 2] 系統找不到指定的檔案。
+```
+
+
+### 測試 4: ❌ 失敗
+**命令**: `pytest tests/test_performance.py -v --tb=short -x`
+**返回碼**: -1
+
+**錯誤**:
+```
+[WinError 2] 系統找不到指定的檔案。
+```
+
+
+### 測試 5: ❌ 失敗
+**命令**: `pytest tests/test_cli_integration.py -v --tb=short -x`
+**返回碼**: -1
+
+**錯誤**:
+```
+[WinError 2] 系統找不到指定的檔案。
+```
+
+
+### 測試 6: ❌ 失敗
+**命令**: `pytest tests/ -q --tb=line`
+**返回碼**: -1
+
+**錯誤**:
+```
+[WinError 2] 系統找不到指定的檔案。
+```
+
+
+### 測試 7: ❌ 失敗
+**命令**: `pytest tests/ -q --junitxml=reports/junit_results.xml --tb=no`
+**返回碼**: -1
+
+**錯誤**:
+```
+[WinError 2] 系統找不到指定的檔案。
+```
+

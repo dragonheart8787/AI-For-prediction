@@ -1,0 +1,120 @@
+{
+    "computation_device": {
+        "default_mode": "auto",
+        "force_cpu": false,
+        "force_gpu": false,
+        "gpu_preference": "auto",
+        "fallback_to_cpu": true
+    },
+    "gpu_backends": {
+        "pytorch": {
+            "enabled": true,
+            "priority": 1,
+            "mixed_precision": true,
+            "memory_fraction": 0.9
+        },
+        "tensorflow": {
+            "enabled": true,
+            "priority": 2,
+            "mixed_precision": true,
+            "memory_growth": true
+        },
+        "cupy": {
+            "enabled": true,
+            "priority": 3,
+            "memory_pool": true
+        },
+        "numba": {
+            "enabled": true,
+            "priority": 4,
+            "fastmath": true
+        }
+    },
+    "performance_optimization": {
+        "batch_size": 1024,
+        "num_workers": 4,
+        "pin_memory": true,
+        "gradient_accumulation": 1,
+        "early_stopping": true,
+        "model_checkpointing": true,
+        "memory_management": {
+            "clear_cache_after_training": true,
+            "monitor_memory_usage": true,
+            "auto_cleanup": true
+        }
+    },
+    "model_specific_settings": {
+        "ARIMA": {
+            "use_gpu": true,
+            "backend": "auto",
+            "optimization_level": "medium"
+        },
+        "ETS": {
+            "use_gpu": true,
+            "backend": "auto",
+            "optimization_level": "medium"
+        },
+        "GARCH": {
+            "use_gpu": true,
+            "backend": "auto",
+            "optimization_level": "high"
+        },
+        "XGBoost": {
+            "use_gpu": true,
+            "backend": "auto",
+            "optimization_level": "high"
+        },
+        "LightGBM": {
+            "use_gpu": true,
+            "backend": "auto",
+            "optimization_level": "high"
+        }
+    },
+    "task_optimization": {
+        "short_term_forecast": {
+            "preferred_device": "gpu",
+            "priority": "speed",
+            "batch_optimization": true
+        },
+        "medium_term_forecast": {
+            "preferred_device": "auto",
+            "priority": "accuracy",
+            "batch_optimization": true
+        },
+        "long_term_forecast": {
+            "preferred_device": "auto",
+            "priority": "stability",
+            "batch_optimization": false
+        },
+        "high_frequency_trading": {
+            "preferred_device": "gpu",
+            "priority": "speed",
+            "batch_optimization": true
+        },
+        "risk_management": {
+            "preferred_device": "gpu",
+            "priority": "accuracy",
+            "batch_optimization": true
+        }
+    },
+    "monitoring": {
+        "log_device_usage": true,
+        "log_performance_metrics": true,
+        "log_memory_usage": true,
+        "performance_benchmarks": {
+            "enabled": true,
+            "run_on_startup": false,
+            "run_after_switching": true
+        }
+    },
+    "advanced": {
+        "multi_gpu_support": false,
+        "distributed_training": false,
+        "custom_cuda_path": "",
+        "environment_variables": {
+            "CUDA_VISIBLE_DEVICES": "",
+            "TF_FORCE_GPU_ALLOW_GROWTH": "true",
+            "PYTORCH_CUDA_ALLOC_CONF": "max_split_size_mb:128"
+        }
+    }
+}
