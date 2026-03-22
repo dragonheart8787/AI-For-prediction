@@ -4,6 +4,45 @@
 
 ---
 
+## 0. 端到端流程（文字版）
+
+主線一條龍可理解為下列階段（對應程式與設定）：
+
+```
+                    ┌─────────────────────────────────────────────────────────────┐
+                    │                     crawler_train_pipeline                 │
+  [Yahoo / Meteo /   │  ┌──────────┐   ┌──────────┐   ┌──────────────┐   ┌───────┴────┐
+   OWID / EIA /      │  │ collect  │──▶│  align   │──▶│feature expand│──▶│   train    │
+   NewsAPI …]        │  │(connectors)│  │schema_   │   │(optional)    │   │Unified     │
+                    │  │          │  │infer     │   │feature_      │   │Predictor   │
+                    │  └──────────┘   └──────────┘   │expansion     │   └──────┬─────┘
+                    │                    │             └──────────────┘          │
+                    │                    │                                       ▼
+                    │                    │                              ┌───────────────┐
+                    │                    │                              │ persist       │
+                    │                    │                              │ models/*.pkl  │
+                    │                    │                              │ artifacts/... │
+                    │                    │                              │ experiment_log│
+                    │                    │                              └───────┬───────┘
+                    └────────────────────┴──────────────────────────────────────┘
+                                                                                 │
+                    ┌──────────────────────────────────────────────────────────────┘
+                    ▼
+            ┌───────────────┐         ┌─────────────────────────────┐
+            │ (optional)    │         │ launch_predict_service +   │
+            │ HTTP serve    │◀────────│ model_serving/ (WSGI)       │
+            └───────────────┘         └─────────────────────────────┘
+```
+
+- **collect**：依 `config/prediction_schema.yaml` 任務挑 connector，拉取時間序列與外生欄位。  
+- **align**：`schema_infer.align_sources`／`align_source_frames` 對齊時間索引；可 `prevent_leakage` 限制填補。  
+- **feature expand**：可選 `--rich-features` 或 YAML 內 `feature_expansion`。  
+- **train**：`UnifiedPredictor.fit`；可 `--walk-forward`；`automl` 在 wf 上需凍結參數。  
+- **persist**：模型檔、`artifacts/<task>/<run_id>/`、`data/experiment_runs.jsonl`（路徑可設定）。  
+- **serve**：載入 `.pkl`，對外 `GET/POST`（見 [serving.md](serving.md)）。
+
+---
+
 ## 1. 元件與責任
 
 | 區塊 | 說明 |
@@ -23,10 +62,10 @@
 
 ---
 
-## 2. 目錄（主線）
+## 2. 目錄（主線 — 與 repo 根目錄一致）
 
 ```
-config/                 # prediction_schema.yaml、tasks、schema
+config/                 # 見 config/README.md；主線為 prediction_schema.yaml
 data_connectors/
 validation/
 model_serving/
@@ -37,25 +76,14 @@ unified_predict.py
 launch_predict_service.py
 demo_backtest_all.py    # 多領域合成／指標 CLI（測試與示範）
 tests/  docs/  examples/  scripts/
-archive/                # 非主線：舊腳本、長文、範例資料、舊 docker 等
-reports/                # 專案內長篇報告（若有的話）
+archive/                # 非主線
+reports/legacy/         # 長篇／舊報告集中區
 data/                   # 預設實驗 log、memory jsonl（.gitignore 視設定）
 ```
 
 ---
 
-## 3. 資料流（概念）
-
-1. **Collect**：依任務從多 connector 取數（無金鑰時部分為離線／合成後備）。  
-2. **Align**：時間索引對齊、缺失處理（防洩漏模式下禁用向後填補）。  
-3. **Features**：可選 `--rich-features`／YAML 擴張。  
-4. **Train**：`UnifiedPredictor.fit`；可 `--walk-forward`；`automl` 於 wf 需凍結參數。  
-5. **Persist**：`models/task_<id>.pkl` 與 `artifacts/<task>/<run_id>/`。  
-6. **Serve**（選）：`launch_predict_service.py` + WSGI。
-
----
-
-## 4. 延伸閱讀
+## 3. 延伸閱讀
 
 - [訓練與指令](training.md)  
 - [HTTP 服務與端點](serving.md)  

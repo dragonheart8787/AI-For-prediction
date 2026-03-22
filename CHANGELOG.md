@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.9.2
+
+- **根目錄**：清掉本機 `.log`、空目錄；`reports/` 長文移至 `reports/legacy/`；重複的 `env.example` 移至 `archive/documentation/env.example.legacy-web`。
+- **config**：`configs/` 正式併入概念完成——主線說明見 `config/README.md`；歸檔之 `train_enhanced` 用 YAML 以 `config/train_enhanced.yaml` 保存，舊巢狀路徑修正為 `archive/legacy/configs/train_enhanced_legacy.yaml`。
+- **文件**：`docs/architecture.md` 補文字版全流程圖；`docs/training.md` 補 core／automl 差異、常用 CLI 與產物表；`docs/serving.md` 補 JSON 請求／回應與錯誤碼說明。
+- **版號**：`README`、`VERSION`、`pyproject.toml`、本檔與 **git tag `v0.9.2`** 對齊。
+- **CI**：`quality` job 增加對**所有已追蹤 `.py`（排除 `archive/`）**之 `compileall`。
+- **GitHub**：新增 [`.github/GITHUB_ABOUT.md`](.github/GITHUB_ABOUT.md) 供手動填寫 Description／Topics（網頁不會自動讀檔）。
+
 ## v0.9.1
 
 - **Repo 佈局**：根目錄收斂為主線；大量舊腳本、長文、範例資料、舊 `configs/`／`serving/`／`paper/` 等移入 `archive/`（見 `archive/README.md`）。
