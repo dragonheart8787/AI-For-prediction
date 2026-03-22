@@ -183,6 +183,6 @@ Workflow 檔：[`.github/workflows/ci.yml`](https://github.com/dragonheart8787/A
 
 ## GitHub Topics 建議
 
-`machine-learning` `time-series` `forecasting` `automl` `pytorch` `onnx` `xgboost` `lightgbm` `python`
+Topics **須逐個加入**（每個以小寫／數字開頭、僅含連字號，見 [`.github/GITHUB_ABOUT.md`](.github/GITHUB_ABOUT.md)）。建議九個：
 
-（請於倉庫 About 手動加入，見上節連結。）
+`machine-learning`、`time-series`、`forecasting`、`automl`、`pytorch`、`onnx`、`xgboost`、`lightgbm`、`python`
