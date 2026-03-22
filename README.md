@@ -4,7 +4,7 @@
 
 **版本**：`0.9.1`（見 [`VERSION`](VERSION)／[`CHANGELOG.md`](CHANGELOG.md)）  
 **授權**：[MIT](LICENSE)  
-**Repository**：[github.com/dragonheart8787/-AI-For-prediction](https://github.com/dragonheart8787/-AI-For-prediction)
+**Repository**：[github.com/dragonheart8787/AI-For-prediction](https://github.com/dragonheart8787/AI-For-prediction)（若仍使用舊網址，GitHub 會自動轉址）
 
 > **文件入口（請從此收斂）**：本檔為唯一首頁；其餘說明見 [`docs/architecture.md`](docs/architecture.md)、[`docs/training.md`](docs/training.md)、[`docs/serving.md`](docs/serving.md)、[`docs/capabilities.md`](docs/capabilities.md)。舊版長文與腳本在 [`archive/`](archive/README.md)。  
 > **Repo 命名**：若可選，建議日後改為 `predict-ai` 等較短名稱；目前遠端網址仍以上方為準。

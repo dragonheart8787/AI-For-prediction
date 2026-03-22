@@ -8,8 +8,8 @@ requires-python = ">=3.10"
 # 安裝依賴仍以 requirements-core.txt / requirements-automl.txt 為準（CI 與慣例）
 
 [project.urls]
-Homepage = "https://github.com/dragonheart8787/-AI-For-prediction"
-Repository = "https://github.com/dragonheart8787/-AI-For-prediction"
+Homepage = "https://github.com/dragonheart8787/AI-For-prediction"
+Repository = "https://github.com/dragonheart8787/AI-For-prediction"
 Changelog = "CHANGELOG.md"
 
 [tool.ruff]
