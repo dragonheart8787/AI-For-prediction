@@ -16,7 +16,7 @@
 | `legacy_root_py/` | 自根目錄移入的舊版 `.py`（AGI、demo、啟動腳本等） |
 | `documentation/` | 自根目錄移入的舊版 `.md`、`.txt` 說明（非 README／CHANGELOG） |
 | `paper/` | LaTeX／論文相關 |
-| `legacy/serving/` | 舊版 vLLM／TensorRT 等 shell（非 `model_serving/`） |
+| `legacy/serving/` | 舊版 vLLM／TensorRT 等 shell（`run_vllm.sh` 等；非主線 `model_serving/`） |
 | `legacy/guides/` | 舊版指南 |
 | `legacy/configs/` | 舊版 `train_enhanced` 用 YAML（主線設定在 `config/`） |
 | `legacy/packages/` | 實驗性子套件（NAS、KD、GPU 等） |
