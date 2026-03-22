@@ -2,6 +2,25 @@
 
 實作於 [`model_serving/unified_http_service.py`](../model_serving/unified_http_service.py)，由 [`launch_predict_service.py`](../launch_predict_service.py) 載入訓練產生的 `.pkl` 後啟動（僅標準函式庫 **wsgiref**，無需 FastAPI）。
 
+## 快速動手（Bash）
+
+終端 1：啟動服務（模型路徑請改成你的 `.pkl`）。
+
+```bash
+python launch_predict_service.py --model-path models/task_stock_price_next.pkl --port 8765
+```
+
+終端 2：`POST /v1/predict`（特徵維度需與訓練一致；下方 5 維僅示意）。
+
+```bash
+curl -s -X POST "http://127.0.0.1:8765/v1/predict" \
+  -H "Content-Type: application/json" \
+  -H "X-Request-ID: demo-1" \
+  -d '{"X": [[1.0, 2.0, 3.0, 4.0, 5.0]], "domain": "financial"}'
+```
+
+成功時回傳 JSON 會含 `predictions`、`model_type`、`artifacts` 等（見 §3）。健康檢查：`curl -s http://127.0.0.1:8765/health`。
+
 ---
 
 ## 1. 啟動

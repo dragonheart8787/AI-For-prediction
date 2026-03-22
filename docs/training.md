@@ -1,5 +1,7 @@
 # 訓練說明
 
+> **本文為訓練正文**（安裝分層、CLI、產物、強化手段），不是僅列連結的 stub。HTTP 見 [`serving.md`](serving.md)。
+
 ---
 
 ## 1. 安裝：core 與 automl 差異

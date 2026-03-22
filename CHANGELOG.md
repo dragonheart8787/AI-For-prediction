@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.9.3
+
+- **CI**：`quality` job 新增 `scripts/check_repo_policy.py`（禁止根層再出現 `accelerators/`、`configs/`、`serving/` 等已歸檔目錄；並強制 `VERSION`／`pyproject.toml`／`CHANGELOG` 首條／`README` 版號一致）。
+- **文件**：`README` 增「你看到的與此不符？」對照，避免誤看舊倉庫／未 pull 的 `main`；workflow 檔頂部註解列出三個 job。
+- **Release**：新增 [`.github/RELEASE_INSTRUCTIONS.md`](.github/RELEASE_INSTRUCTIONS.md)（`gh release create` 步驟）。
+
 ## v0.9.2
 
 - **根目錄**：清掉本機 `.log`、空目錄；`reports/` 長文移至 `reports/legacy/`；重複的 `env.example` 移至 `archive/documentation/env.example.legacy-web`。

@@ -2,9 +2,21 @@
 
 **一句話**：從 Yahoo / Open-Meteo / OWID / EIA / NewsAPI 等來源拉資料、時間對齊、訓練統一迴歸模型，並可選 HTTP 推論。
 
-**版號（唯一來源）**：請以根目錄 [`VERSION`](VERSION) 為準；目前為 **`0.9.2`**，並與 [`pyproject.toml`](pyproject.toml)、[`CHANGELOG.md`](CHANGELOG.md) 最新條目一致。  
+**版號（唯一來源）**：請以根目錄 [`VERSION`](VERSION) 為準；目前為 **`0.9.3`**，並與 [`pyproject.toml`](pyproject.toml)、[`CHANGELOG.md`](CHANGELOG.md) **首條 `## v…`**、本 README 一致（CI 會跑 [`scripts/check_repo_policy.py`](scripts/check_repo_policy.py) 驗證）。  
 **授權**：[MIT](LICENSE)  
 **Repository**：[github.com/dragonheart8787/AI-For-prediction](https://github.com/dragonheart8787/AI-For-prediction)
+
+### 你看到的畫面與這裡不符？
+
+若 GitHub 首頁根目錄仍出現 **`accelerators/`、`configs/`、`serving/`、`paper/`、`AGI_*.md`** 等，幾乎可判定是 **錯倉庫**、**舊預設分支**，或 **未 `git pull`**：
+
+| 檢查 | 預期（本倉庫 `main` 最新） |
+|------|---------------------------|
+| 遠端 URL | `https://github.com/dragonheart8787/AI-For-prediction.git`（舊名 `-AI-For-prediction` 可能仍轉址，但內容應已同步） |
+| `git log --oneline -5` | 應見 **多個** commit（非單一 Initial commit） |
+| 根層資料夾 | **不應**有上表舊目錄；它們應只在 **`archive/`** 內 |
+| [`VERSION`](VERSION) 與 [`CHANGELOG.md`](CHANGELOG.md) 第一條 | 版號相同（目前 **`0.9.3`**） |
+| [Actions](https://github.com/dragonheart8787/AI-For-prediction/actions) | 應有 **3 個 job**：`test`、`test-automl-torch`、`quality` |
 
 > **文件入口**：本檔為唯一首頁 → [`docs/architecture.md`](docs/architecture.md)、[`docs/training.md`](docs/training.md)、[`docs/serving.md`](docs/serving.md)、[`docs/capabilities.md`](docs/capabilities.md)。舊版腳本與長文 → [`archive/`](archive/README.md)；專案內報告 → [`reports/legacy/`](reports/legacy/README.md)。  
 > **GitHub About**：首頁右側 Description／Topics 請依 [`.github/GITHUB_ABOUT.md`](.github/GITHUB_ABOUT.md) 手動貼上（網頁不會自動讀取該檔）。
@@ -153,13 +165,19 @@ reports/legacy/           # 長篇／舊報告
 
 ## CI
 
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml)：多矩陣 pytest、`requirements-automl` 子集測試，以及 **quality**（**全部已追蹤 `.py` 之 compileall（排除 `archive/`）**、import smoke、`ruff check tests/`）。
+Workflow 檔：[`.github/workflows/ci.yml`](https://github.com/dragonheart8787/AI-For-prediction/blob/main/.github/workflows/ci.yml)（檔案頂部註解亦列出 job）。實際跑 **3 個 job**：
+
+| Job | 內容 |
+|-----|------|
+| **`test`** | `ubuntu-latest` + `windows-latest` × Python 3.11／3.12；`pip install -r requirements-core.txt`；`pytest tests/` |
+| **`test-automl-torch`** | Ubuntu；core + automl；`pytest tests/test_automl_torch.py` |
+| **`quality`** | `scripts/check_repo_policy.py`；`compileall` 所有已追蹤 `*.py`（**排除 `archive/`**）；import smoke；`ruff check tests/` |
 
 ---
 
 ## Release
 
-請在 GitHub 建立 **Release**（或至少本機 `git tag`）：目前展示版號建議 **`v0.9.2`**（與 `VERSION` 一致）。若日後封板可再考慮 `v1.0.0-beta`。
+步驟見 [`.github/RELEASE_INSTRUCTIONS.md`](.github/RELEASE_INSTRUCTIONS.md)。目前 tag 建議與 [`VERSION`](VERSION) 一致：**`v0.9.3`**。
 
 ---
 
