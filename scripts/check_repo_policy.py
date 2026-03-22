@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 # 這些名稱若出現在「已追蹤檔案的第一層路徑」→ 視為根目錄污染
 FORBIDDEN_ROOT_NAMES = frozenset(
     {
+        "archive",
         "accelerators",
         "agi_images",
         "agi_storage",
@@ -64,7 +65,11 @@ def check_root_clean(tracked: list[str]) -> None:
     roots = _top_level_roots(tracked)
     bad = sorted(FORBIDDEN_ROOT_NAMES & roots)
     if bad:
-        print("ERROR: 根層不應追蹤下列目錄（應在 archive/ 內）:", ", ".join(bad), file=sys.stderr)
+        print(
+            "ERROR: 根層不應追蹤下列目錄（歷史內容請放分支 legacy-archive）:",
+            ", ".join(bad),
+            file=sys.stderr,
+        )
         raise SystemExit(1)
     print("OK: 根層無禁止目錄")
 

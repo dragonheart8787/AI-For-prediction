@@ -1,6 +1,6 @@
 [project]
 name = "predict-ai"
-version = "0.9.3"
+version = "0.9.4"
 description = "Multi-source time-series crawl, align, train, and optional HTTP inference"
 readme = "README.md"
 license = { text = "MIT" }
@@ -16,7 +16,6 @@ Changelog = "CHANGELOG.md"
 line-length = 120
 target-version = "py311"
 extend-exclude = [
-  "archive",
   "automl/hyperparameter_optimization.py",
 ]
 

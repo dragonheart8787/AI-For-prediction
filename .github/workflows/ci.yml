@@ -1,7 +1,7 @@
 # Jobs（在 Actions 分頁應看到 3 個）：
 #   1) test        — matrix Ubuntu/Windows × Py3.11/3.12，pytest tests/
 #   2) test-automl-torch — Ubuntu，pytest tests/test_automl_torch.py
-#   3) quality     — compileall（排除 archive/）、import smoke、ruff tests/、scripts/check_repo_policy.py
+#   3) quality     — compileall（全部已追蹤 .py）、import smoke、ruff tests/、scripts/check_repo_policy.py
 name: CI
 
 on:
@@ -69,10 +69,10 @@ jobs:
           pip install -r requirements-core.txt ruff
       - name: Repo policy (root layout + version sync)
         run: python scripts/check_repo_policy.py
-      - name: compileall (all tracked .py except archive/)
+      - name: compileall (all tracked .py)
         shell: bash
         run: |
-          mapfile -t py_files < <(git ls-files '*.py' | grep -v '^archive/')
+          mapfile -t py_files < <(git ls-files '*.py')
           if [ "${#py_files[@]}" -eq 0 ]; then echo "no py files"; exit 1; fi
           python -m compileall -q "${py_files[@]}"
       - name: Import smoke

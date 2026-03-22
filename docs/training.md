@@ -67,7 +67,7 @@ python crawler_train_pipeline.py --help
 | **深度模型** | `lstm` / `transformer` 等（需 torch）；walk-forward 預設跳過，需 `--wf-allow-deep` |
 | **Walk-forward** | `--walk-forward`；`automl` 每折需事先搜參並以 `automl_frozen` 傳入（防洩漏與成本） |
 
-較完整表格與範例（歸檔原文）：[`archive/documentation/強模型訓練要點.md`](../archive/documentation/強模型訓練要點.md)。
+較完整表格與範例（歸檔原文目錄）：[`legacy-archive/archive/documentation`](https://github.com/dragonheart8787/AI-For-prediction/tree/legacy-archive/archive/documentation)（內含 `強模型訓練要點.md` 等）。
 
 ---
 

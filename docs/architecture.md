@@ -1,6 +1,6 @@
 # 架構說明
 
-> **本文為架構正文**（含端到端流程圖與元件表），不是僅列連結的索引頁。能力／限制對照表見 [`capabilities.md`](capabilities.md)；舊版長文見 [`archive/`](../archive/README.md)。
+> **本文為架構正文**（含端到端流程圖與元件表），不是僅列連結的索引頁。能力／限制對照表見 [`capabilities.md`](capabilities.md)；歷史長文見分支 **`legacy-archive`**（[說明](LEGACY_ARCHIVE_BRANCH.md)）。
 
 本專案主線是**多源時序資料 → 對齊與特徵 → 統一迴歸訓練 →（選用）HTTP 推論**。
 
@@ -78,8 +78,8 @@ unified_predict.py
 launch_predict_service.py
 demo_backtest_all.py    # 多領域合成／指標 CLI（測試與示範）
 tests/  docs/  examples/  scripts/
-archive/                # 非主線
 reports/legacy/         # 長篇／舊報告集中區
+# 歷史整包：分支 legacy-archive（main 不含 archive/）
 data/                   # 預設實驗 log、memory jsonl（.gitignore 視設定）
 ```
 
@@ -90,4 +90,4 @@ data/                   # 預設實驗 log、memory jsonl（.gitignore 視設定
 - [訓練與指令](training.md)  
 - [HTTP 服務與端點](serving.md)  
 - [能力對照表（與程式碼同步）](capabilities.md)  
-- 第一輪重構筆記（歸檔）：[`archive/documentation/REFACTOR_ROUND1_ARCHITECTURE.md`](../archive/documentation/REFACTOR_ROUND1_ARCHITECTURE.md)
+- 第一輪重構筆記（歸檔）：[`REFACTOR_ROUND1_ARCHITECTURE.md`（legacy-archive 分支）](https://github.com/dragonheart8787/AI-For-prediction/blob/legacy-archive/archive/documentation/REFACTOR_ROUND1_ARCHITECTURE.md)

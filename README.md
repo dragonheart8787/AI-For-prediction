@@ -2,7 +2,7 @@
 
 **一句話**：從 Yahoo / Open-Meteo / OWID / EIA / NewsAPI 等來源拉資料、時間對齊、訓練統一迴歸模型，並可選 HTTP 推論。
 
-**版號（唯一來源）**：請以根目錄 [`VERSION`](VERSION) 為準；目前為 **`0.9.3`**，並與 [`pyproject.toml`](pyproject.toml)、[`CHANGELOG.md`](CHANGELOG.md) **首條 `## v…`**、本 README 一致（CI 會跑 [`scripts/check_repo_policy.py`](scripts/check_repo_policy.py) 驗證）。  
+**版號（唯一來源）**：請以根目錄 [`VERSION`](VERSION) 為準；目前為 **`0.9.4`**，並與 [`pyproject.toml`](pyproject.toml)、[`CHANGELOG.md`](CHANGELOG.md) **首條 `## v…`**、本 README 一致（CI 會跑 [`scripts/check_repo_policy.py`](scripts/check_repo_policy.py) 驗證）。  
 **授權**：[MIT](LICENSE)  
 **Repository**：[github.com/dragonheart8787/AI-For-prediction](https://github.com/dragonheart8787/AI-For-prediction)
 
@@ -14,11 +14,11 @@
 |------|---------------------------|
 | 遠端 URL | `https://github.com/dragonheart8787/AI-For-prediction.git`（舊名 `-AI-For-prediction` 可能仍轉址，但內容應已同步） |
 | `git log --oneline -5` | 應見 **多個** commit（非單一 Initial commit） |
-| 根層資料夾 | **不應**有上表舊目錄；它們應只在 **`archive/`** 內 |
-| [`VERSION`](VERSION) 與 [`CHANGELOG.md`](CHANGELOG.md) 第一條 | 版號相同（目前 **`0.9.3`**） |
+| 根層資料夾 | **`main` 不應**有 `accelerators/`、`archive/`、`configs/` 等；歷史整包在分支 **`legacy-archive`**（見 [docs/LEGACY_ARCHIVE_BRANCH.md](docs/LEGACY_ARCHIVE_BRANCH.md)） |
+| [`VERSION`](VERSION) 與 [`CHANGELOG.md`](CHANGELOG.md) 第一條 | 版號相同（目前 **`0.9.4`**） |
 | [Actions](https://github.com/dragonheart8787/AI-For-prediction/actions) | 應有 **3 個 job**：`test`、`test-automl-torch`、`quality` |
 
-> **文件入口**：本檔為唯一首頁 → [`docs/architecture.md`](docs/architecture.md)、[`docs/training.md`](docs/training.md)、[`docs/serving.md`](docs/serving.md)、[`docs/capabilities.md`](docs/capabilities.md)。舊版腳本與長文 → [`archive/`](archive/README.md)；專案內報告 → [`reports/legacy/`](reports/legacy/README.md)。  
+> **文件入口**：本檔為唯一首頁 → [`docs/architecture.md`](docs/architecture.md)、[`docs/training.md`](docs/training.md)、[`docs/serving.md`](docs/serving.md)、[`docs/capabilities.md`](docs/capabilities.md)。**歷史腳本／長文／範例資料** → 分支 [`legacy-archive`](https://github.com/dragonheart8787/AI-For-prediction/tree/legacy-archive/archive)（說明：[docs/LEGACY_ARCHIVE_BRANCH.md](docs/LEGACY_ARCHIVE_BRANCH.md)）。專案內報告 → [`reports/legacy/`](reports/legacy/README.md)。  
 > **GitHub About**：首頁右側 Description／Topics 請依 [`.github/GITHUB_ABOUT.md`](.github/GITHUB_ABOUT.md) 手動貼上（網頁不會自動讀取該檔）。
 
 ---
@@ -37,7 +37,7 @@ pip install -r requirements-core.txt
 pip install -r requirements-automl.txt
 ```
 
-歷史依賴清單：[archive/requirements_legacy/](archive/requirements_legacy/)。環境變數範例：[`.env.example`](.env.example)（**勿 commit 含金鑰的 `.env`**）。
+歷史依賴清單（`legacy-archive` 分支）：[requirements_legacy 目錄](https://github.com/dragonheart8787/AI-For-prediction/tree/legacy-archive/archive/requirements_legacy)。環境變數範例：[`.env.example`](.env.example)（**勿 commit 含金鑰的 `.env`**）。
 
 ---
 
@@ -149,8 +149,8 @@ launch_predict_service.py
 demo_backtest_all.py
 automl/   nn_models/       # 選配
 tests/  docs/  examples/  scripts/
-archive/                  # 非主線
-reports/legacy/           # 長篇／舊報告
+reports/legacy/           # 長篇／舊報告（仍於主線，精簡量）
+# 歷史 accelerators/paper/… 整包 → 見分支 legacy-archive，不在 main 根目錄
 ```
 
 ---
@@ -171,13 +171,13 @@ Workflow 檔：[`.github/workflows/ci.yml`](https://github.com/dragonheart8787/A
 |-----|------|
 | **`test`** | `ubuntu-latest` + `windows-latest` × Python 3.11／3.12；`pip install -r requirements-core.txt`；`pytest tests/` |
 | **`test-automl-torch`** | Ubuntu；core + automl；`pytest tests/test_automl_torch.py` |
-| **`quality`** | `scripts/check_repo_policy.py`；`compileall` 所有已追蹤 `*.py`（**排除 `archive/`**）；import smoke；`ruff check tests/` |
+| **`quality`** | `scripts/check_repo_policy.py`；`compileall` 所有已追蹤 `*.py`；import smoke；`ruff check tests/` |
 
 ---
 
 ## Release
 
-步驟見 [`.github/RELEASE_INSTRUCTIONS.md`](.github/RELEASE_INSTRUCTIONS.md)。目前 tag 建議與 [`VERSION`](VERSION) 一致：**`v0.9.3`**。
+步驟見 [`.github/RELEASE_INSTRUCTIONS.md`](.github/RELEASE_INSTRUCTIONS.md)。目前 tag 建議與 [`VERSION`](VERSION) 一致：**`v0.9.4`**。
 
 ---
 

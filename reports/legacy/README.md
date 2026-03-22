@@ -8,4 +8,4 @@
 - `全能力與效能分析報告.md`
 - `test_execution.txt`
 
-更舊的散裝 Markdown 多在 [`archive/documentation/`](../../archive/documentation/)。
+更舊的散裝 Markdown 多在 **`legacy-archive`** 分支的 [`archive/documentation/`](https://github.com/dragonheart8787/AI-For-prediction/tree/legacy-archive/archive/documentation)。

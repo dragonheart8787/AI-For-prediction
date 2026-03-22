@@ -1,6 +1,0 @@
-{
-  "model_type": "custom",
-  "architecture": "DemoModel",
-  "torch_dtype": "float32",
-  "num_parameters": 11274
-}

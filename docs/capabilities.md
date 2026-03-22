@@ -6,7 +6,7 @@
 
 ## 〇、架構重構（第一輪）
 
-- 契約與設定：`prediction_contracts.py`、歸檔說明 [`archive/documentation/REFACTOR_ROUND1_ARCHITECTURE.md`](../archive/documentation/REFACTOR_ROUND1_ARCHITECTURE.md)
+- 契約與設定：`prediction_contracts.py`、歸檔說明 [`REFACTOR_ROUND1_ARCHITECTURE.md`（legacy-archive）](https://github.com/dragonheart8787/AI-For-prediction/blob/legacy-archive/archive/documentation/REFACTOR_ROUND1_ARCHITECTURE.md)
 - 區間／可解釋性：`prediction_intervals.py`、`model_explainability.py`
 - 實驗追溯：`pipeline_run_context.py`、`artifact_registry.py`、`experiment_log.log_training_event`
 - 產物目錄：`artifacts/`（訓練 run 摘要與 `models/*.pkl` 路徑並存）
@@ -67,7 +67,7 @@ python demo_backtest_all.py --model linear --batch 32
 ```
 
 > 特徵維度須與訓練時一致；若不知維度，請以訓練日誌中的特徵數為準。  
-> 如何把模型練得更強：見 **[`archive/documentation/強模型訓練要點.md`](../archive/documentation/強模型訓練要點.md)**（資料量與真實性優先於調參）；精簡版已併入 [training.md](training.md)。
+> 如何把模型練得更強：見 **legacy-archive** 上 [`documentation` 目錄](https://github.com/dragonheart8787/AI-For-prediction/tree/legacy-archive/archive/documentation) 內之《強模型訓練要點》（資料量與真實性優先於調參）；精簡版已併入 [training.md](training.md)。
 
 ---
 
@@ -77,7 +77,7 @@ python demo_backtest_all.py --model linear --batch 32
 
 以下仍多為實驗或重型模組，**未**預設用於上述 HTTP 一鍵流程：
 
-`archive/legacy/packages/` 下舊版模組（如 `data_pipeline`、`gpu_acceleration`、`neural_architecture_search`、`reinforcement_learning`、`knowledge_distillation`）與 `model_serving/serving_engine.py`（舊版引擎）…
+**legacy-archive** 分支下 `archive/legacy/packages/` 之舊版模組（如 `data_pipeline`、`gpu_acceleration`、`neural_architecture_search`、`reinforcement_learning`、`knowledge_distillation`）與主線 `model_serving/serving_engine.py`（舊版引擎）…
 
 若需 **Kafka / K8s / Prometheus 全棧**，請在現有 `docker-compose.yml` 上自行擴充。
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.9.4
+
+- **根目錄（主線）**：自 `main` **移除 `archive/`**（約 390+ 檔），避免首頁出現 `accelerators/`、`paper/`、`configs/` 等歷史資料夾；完整舊樹保留在分支 **`legacy-archive`**（與移除前 `main` 快照一致）。
+- **文件**：新增 [`docs/LEGACY_ARCHIVE_BRANCH.md`](docs/LEGACY_ARCHIVE_BRANCH.md)；README／docs 內原 `archive/` 相對連結改為 GitHub `legacy-archive` 網址。
+- **CI**：`compileall` 改為掃描所有已追蹤 `.py`（不再排除 `archive`）；`check_repo_policy` 禁止根層再次出现 **`archive/`** 與舊目錄名。
+
 ## v0.9.3
 
 - **CI**：`quality` job 新增 `scripts/check_repo_policy.py`（禁止根層再出現 `accelerators/`、`configs/`、`serving/` 等已歸檔目錄；並強制 `VERSION`／`pyproject.toml`／`CHANGELOG` 首條／`README` 版號一致）。
@@ -34,4 +40,4 @@
 - 契約：`prediction_contracts` 統一 fit/predict 回傳；`prediction_intervals`、`model_explainability` 分離
 - CI：core 全測 + 選用 automl/torch job
 
-詳見歸檔：`archive/documentation/REFACTOR_ROUND1_ARCHITECTURE.md`；主線能力表：`docs/capabilities.md`。
+詳見歸檔（**legacy-archive** 分支）：[`REFACTOR_ROUND1_ARCHITECTURE.md`](https://github.com/dragonheart8787/AI-For-prediction/blob/legacy-archive/archive/documentation/REFACTOR_ROUND1_ARCHITECTURE.md)；主線能力表：`docs/capabilities.md`。
