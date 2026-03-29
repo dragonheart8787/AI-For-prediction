@@ -47,8 +47,9 @@ def _load_yaml(path: str) -> Dict[str, Any]:
             f"已嘗試：{os.path.abspath(path)} 與 {os.path.join(REPO_ROOT, path)}\n\n"
             "請擇一：\n"
             "  1) 使用倉庫內預設檔：python scripts/batch_train.py --config config/batch_train.yaml\n"
-            "  2) 複製範例後再跑：copy config\\batch_train.example.yaml config\\batch_train.yaml\n"
-            "  3) 直接指定範例：--config config/batch_train.example.yaml",
+            "  2) 快速 3 筆：--config config/batch_train.small.yaml\n"
+            "  3) 複製範例：copy config\\batch_train.example.yaml config\\batch_train.yaml\n"
+            "  4) 直接指定範例：--config config/batch_train.example.yaml",
             file=sys.stderr,
         )
         raise SystemExit(2)

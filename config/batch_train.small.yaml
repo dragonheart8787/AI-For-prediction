@@ -1,0 +1,10 @@
+# 小批次（3 筆）— 僅供快速驗證管線
+# 執行：python scripts/batch_train.py --config config/batch_train.small.yaml --dry-run
+
+schema: config/prediction_schema.yaml
+defaults: {}
+
+jobs:
+  - { task: stock_price_next, model: linear }
+  - { task: stock_price_next, model: xgboost }
+  - { task: temperature_next, model: linear }

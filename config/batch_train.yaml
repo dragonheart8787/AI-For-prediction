@@ -1,17 +1,38 @@
-# 批次訓練預設設定（可直接修改；亦見 batch_train.example.yaml）
-# 執行：python scripts/batch_train.py --config config/batch_train.yaml
+# 批次訓練預設：60 筆（約為早期 3 筆的 20 倍）
+# 15 任務 × 4 模型（linear / xgboost / lightgbm / ensemble）
+#
+# 執行：
+#   python scripts/batch_train.py --config config/batch_train.yaml --dry-run
+#   python scripts/batch_train.py --config config/batch_train.yaml --continue-on-fail
+#
+# 建議：先 pip install xgboost lightgbm；耗時長、部分任務可能因 API／網路失敗，加 --continue-on-fail。
+# 快速測試請用 config/batch_train.small.yaml
 
 schema: config/prediction_schema.yaml
 
 defaults: {}
 
-jobs:
-  - { task: stock_price_next, model: linear }
-  - { task: stock_price_next, model: xgboost }
-  - { task: temperature_next, model: linear }
+jobs: []
 
-# 改用矩陣時：jobs 改為 []，並取消註解 matrix
-# jobs: []
-# matrix:
-#   tasks: [stock_price_next, stock_return, temperature_next]
-#   models: [linear, lightgbm]
+matrix:
+  tasks:
+    - stock_price_next
+    - stock_return
+    - temperature_next
+    - energy_demand_next
+    - news_sentiment_next
+    - covid_cases_next
+    - multi_source_price
+    - crypto_btc_next
+    - crypto_eth_next
+    - forex_usdjpy_next
+    - forex_eurusd_next
+    - gold_price_next
+    - oil_price_next
+    - sp500_next
+    - twii_next
+  models:
+    - linear
+    - xgboost
+    - lightgbm
+    - ensemble
