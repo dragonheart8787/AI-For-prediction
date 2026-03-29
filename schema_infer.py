@@ -12,6 +12,20 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
+def _normalize_datetime_index_for_merge(idx: Any) -> Any:
+    """
+    讓 merge_asof 的左右索引 dtype 一致：pandas 不允許 naive 與 tz-aware 混用。
+    tz-aware 一律轉成 UTC 再去掉時區（保留同一瞬間的牆鐘時間，以 naive 表示）。
+    """
+    if pd is None:
+        return idx
+    if not isinstance(idx, pd.DatetimeIndex):
+        idx = pd.DatetimeIndex(idx)
+    if idx.tz is not None:
+        return idx.tz_convert("UTC").tz_localize(None)
+    return idx
+
+
 @dataclass
 class AlignSummary:
     """多源對齊摘要（可追溯資料品質）。"""
@@ -80,6 +94,7 @@ def align_source_frames(
     main_df = main_df.dropna(subset=[timestamp_col]).sort_values(timestamp_col)
     main_df = main_df.set_index(timestamp_col)
     main_df = main_df[~main_df.index.duplicated(keep="first")]
+    main_df.index = _normalize_datetime_index_for_merge(main_df.index)
     main_df = main_df.resample(freq).asfreq()
     main_df.index.name = timestamp_col
 
@@ -100,6 +115,7 @@ def align_source_frames(
         aux_df = aux_df.dropna(subset=[timestamp_col]).sort_values(timestamp_col)
         aux_df = aux_df.set_index(timestamp_col)
         aux_df = aux_df[~aux_df.index.duplicated(keep="first")]
+        aux_df.index = _normalize_datetime_index_for_merge(aux_df.index)
         feats = [c for c in aux_df.columns if c not in exclude]
         if not feats:
             continue

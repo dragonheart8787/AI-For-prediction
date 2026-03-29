@@ -1,5 +1,7 @@
 """多資料源時間對齊單元測試。"""
 
+import pandas as pd
+
 from schema_infer import align_sources
 
 
@@ -51,3 +53,24 @@ def test_align_sources_inner_drops_unmatched():
     assert len(out_left) >= len(out_inner)
     # inner 應排除完全對不到副源的列（視 merge 結果而定，至少不應比 left 多）
     assert len(out_inner) <= len(out_left)
+
+
+def test_align_sources_naive_vs_utc_index_merge_asof():
+    """一邊 naive、一邊 UTC 時，merge_asof 需相同 dtype（schema_infer 會正規化）。"""
+    rows_yahoo = [
+        {"timestamp": "2025-01-01T00:00:00", "close": 100.0},
+        {"timestamp": "2025-01-02T00:00:00", "close": 101.0},
+    ]
+    rows_news = [
+        {"timestamp": pd.Timestamp("2025-01-01T12:00:00", tz="UTC"), "sentiment": 0.5},
+        {"timestamp": pd.Timestamp("2025-01-02T06:00:00", tz="UTC"), "sentiment": -0.1},
+    ]
+    out = align_sources(
+        {"yahoo": rows_yahoo, "newsapi": rows_news},
+        target_source="yahoo",
+        freq="1D",
+        join_strategy="left",
+        join_tolerance="36h",
+        missing_policy="ffill",
+    )
+    assert len(out) == 2
