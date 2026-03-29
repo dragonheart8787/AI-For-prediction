@@ -55,3 +55,7 @@ desktop.ini
 
 # 雜項本機日誌
 *.log
+
+# 圖表腳本本機測試輸出
+reports/charts_smoke/
+reports/charts_test/

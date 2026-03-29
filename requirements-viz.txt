@@ -1,0 +1,3 @@
+# 訓練／實驗結果圖表（選配）
+# pip install -r requirements-viz.txt
+matplotlib>=3.5.0

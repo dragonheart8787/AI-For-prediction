@@ -1,0 +1,27 @@
+# 批次訓練設定範例
+# 複製為 config/batch_train.yaml 後修改；執行：
+#   python scripts/batch_train.py --config config/batch_train.yaml
+
+schema: config/prediction_schema.yaml
+
+# defaults:
+#   rich_features: true
+#   preset: strong
+#   period: 6mo
+defaults: {}
+
+# --- 擇一使用 ---
+
+# 方式 A：明確 job 列表（有內容時不會讀 matrix）
+jobs:
+  - { task: stock_price_next, model: linear }
+  - { task: stock_price_next, model: xgboost }
+  - { task: temperature_next, model: linear }
+
+# 方式 B：笛卡兒積（請把上面 jobs 改成 [] 再啟用下面）
+# jobs: []
+# matrix:
+#   tasks: [stock_price_next, stock_return, temperature_next]
+#   models: [linear, lightgbm]
+# exclude:
+#   - { task: stock_return, model: lightgbm }
