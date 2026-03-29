@@ -979,6 +979,8 @@ class UnifiedPredictor:
         }
         if self._fit_metrics:
             info["fit_metrics"] = self._fit_metrics
+        if self._feature_names is not None:
+            info["feature_names"] = list(self._feature_names)
         return info
 
     def predict_sync(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:

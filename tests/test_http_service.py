@@ -28,8 +28,9 @@ def test_http_root_landing(model_pkl: str):
     assert st == 200
     assert any(h[0].lower() == "content-type" and "text/html" in h[1] for h in headers)
     text = b.decode("utf-8")
-    assert "/health" in text
     assert "v1/predict" in text
+    assert "/v1/models" in text
+    assert "操作介面" in text
 
 
 def test_http_health_and_predict(model_pkl: str):
@@ -57,3 +58,34 @@ def test_http_404(model_pkl: str):
     app = UnifiedPredictHTTPApp(model_pkl)
     st, _, b = app.handle_request("GET", "/nope", b"")
     assert st == 404
+
+
+def test_http_v1_models_and_load(tmp_path: Path):
+    from model_serving.unified_http_service import UnifiedPredictHTTPApp
+
+    models = tmp_path / "models"
+    models.mkdir()
+    rng = np.random.default_rng(2)
+    X = rng.normal(size=(20, 2))
+    y = rng.normal(size=20)
+    p = UnifiedPredictor(auto_onnx=False, rate_limit_enabled=False, normalize=False)
+    p.fit(X, y, model="linear")
+    p._feature_names = ["a", "b"]
+    p.save_model(str(models / "task_demo_task.pkl"))
+
+    app = UnifiedPredictHTTPApp(model_path=None, models_root=str(models), auto_load=False)
+    st, _, b = app.handle_request("GET", "/v1/models", b"")
+    assert st == 200
+    j = json.loads(b.decode())
+    assert any(t.get("task_id") == "demo_task" for t in j.get("tasks", []))
+
+    st2, _, b2 = app.handle_request(
+        "POST",
+        "/v1/load_model",
+        json.dumps({"task_id": "demo_task"}).encode("utf-8"),
+    )
+    assert st2 == 200
+    st3, _, b3 = app.handle_request("GET", "/v1/model/info", b"")
+    assert st3 == 200
+    info = json.loads(b3.decode())
+    assert info.get("feature_names") == ["a", "b"]
