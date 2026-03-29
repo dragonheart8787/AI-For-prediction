@@ -1,3 +1,26 @@
-# 選用：AutoML（Optuna）與 PyTorch 深度模型（mlp_torch / lstm / transformer）
+# AutoML、深度學習、ONNX、可解釋性（選配安裝）
+# 依賴核心：pip install -r requirements-core.txt
+
+# AutoML
 optuna>=3.0.0
+
+# 深度學習（PyTorch CPU 版本；GPU 請依官網安裝）
 torch>=2.0.0
+
+# 梯度提升樹
+xgboost>=1.7.0
+lightgbm>=3.3.0
+
+# ONNX 推論與轉換
+onnxruntime>=1.14.0
+skl2onnx>=1.14.0
+
+# 資料收集
+yfinance>=0.2.0
+requests>=2.28.0
+
+# 可解釋性（選配，無此套件時自動降級）
+shap>=0.42.0
+
+# 分散式 AutoML（選配）
+# optuna-distributed>=0.5.0
