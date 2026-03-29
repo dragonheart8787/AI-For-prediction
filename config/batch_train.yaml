@@ -1,0 +1,17 @@
+# 批次訓練預設設定（可直接修改；亦見 batch_train.example.yaml）
+# 執行：python scripts/batch_train.py --config config/batch_train.yaml
+
+schema: config/prediction_schema.yaml
+
+defaults: {}
+
+jobs:
+  - { task: stock_price_next, model: linear }
+  - { task: stock_price_next, model: xgboost }
+  - { task: temperature_next, model: linear }
+
+# 改用矩陣時：jobs 改為 []，並取消註解 matrix
+# jobs: []
+# matrix:
+#   tasks: [stock_price_next, stock_return, temperature_next]
+#   models: [linear, lightgbm]

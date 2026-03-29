@@ -25,12 +25,34 @@ from typing import Any, Dict, List, Optional, Tuple
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+def _resolve_existing_path(path: str) -> str:
+    """依目前工作目錄或專案根目錄尋找設定檔。"""
+    if os.path.isfile(path):
+        return os.path.abspath(path)
+    alt = os.path.join(REPO_ROOT, path)
+    if os.path.isfile(alt):
+        return alt
+    return os.path.abspath(path)
+
+
 def _load_yaml(path: str) -> Dict[str, Any]:
     try:
         import yaml
     except ImportError as e:
         raise SystemExit("批次設定需要 PyYAML：pip install pyyaml") from e
-    with open(path, "r", encoding="utf-8") as f:
+    resolved = _resolve_existing_path(path)
+    if not os.path.isfile(resolved):
+        print(
+            f"找不到設定檔：{path}\n"
+            f"已嘗試：{os.path.abspath(path)} 與 {os.path.join(REPO_ROOT, path)}\n\n"
+            "請擇一：\n"
+            "  1) 使用倉庫內預設檔：python scripts/batch_train.py --config config/batch_train.yaml\n"
+            "  2) 複製範例後再跑：copy config\\batch_train.example.yaml config\\batch_train.yaml\n"
+            "  3) 直接指定範例：--config config/batch_train.example.yaml",
+            file=sys.stderr,
+        )
+        raise SystemExit(2)
+    with open(resolved, "r", encoding="utf-8") as f:
         return yaml.safe_load(f) or {}
 
 
