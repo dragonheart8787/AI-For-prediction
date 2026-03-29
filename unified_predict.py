@@ -61,6 +61,21 @@ except Exception:
 logger = logging.getLogger(__name__)
 
 
+def _sklearn_compat_predict(model: Any, X_arr: np.ndarray) -> np.ndarray:
+    """當 estimator 帶有 ``feature_names_in_`` 時，以同名欄位 DataFrame 預測，避免 sklearn 警告。"""
+    fn_in = getattr(model, "feature_names_in_", None)
+    if pd is None or fn_in is None:
+        return np.asarray(model.predict(X_arr), dtype=float)
+    try:
+        cols = [str(x) for x in np.asarray(fn_in).ravel()]
+    except Exception:
+        return np.asarray(model.predict(X_arr), dtype=float)
+    if len(cols) != X_arr.shape[1]:
+        return np.asarray(model.predict(X_arr), dtype=float)
+    X_df = pd.DataFrame(X_arr, columns=cols)
+    return np.asarray(model.predict(X_df), dtype=float)
+
+
 def _time_series_train_val_split(
     X: np.ndarray,
     y: np.ndarray,
@@ -781,7 +796,7 @@ class UnifiedPredictor:
                         self.model = model
 
                     def predict(self, X: np.ndarray) -> np.ndarray:
-                        return self.model.predict(X)
+                        return _sklearn_compat_predict(self.model, X)
 
                 self.onnx_runner = XGBoostONNXRunner(self.model)
                 self.model_name = f"onnx_{self.model_name}"
@@ -793,7 +808,7 @@ class UnifiedPredictor:
                         self.model = model
 
                     def predict(self, X: np.ndarray) -> np.ndarray:
-                        return self.model.predict(X)
+                        return _sklearn_compat_predict(self.model, X)
 
                 self.onnx_runner = LightGBMONNXRunner(self.model)
                 self.model_name = f"onnx_{self.model_name}"
@@ -820,14 +835,14 @@ class UnifiedPredictor:
             for (_name, m), w in zip(members, weights):
                 if not hasattr(m, "predict"):
                     continue
-                p = np.asarray(m.predict(X_arr), dtype=float).reshape(-1, 1)
+                p = _sklearn_compat_predict(m, X_arr).reshape(-1, 1)
                 acc = p * w if acc is None else acc + p * w
             if acc is None:
                 return np.zeros((X_arr.shape[0], 1), dtype=float)
             return acc
 
         if hasattr(self.model, "predict"):
-            preds = self.model.predict(X_arr)
+            preds = _sklearn_compat_predict(self.model, X_arr)
             preds = np.asarray(preds, dtype=float)
             if preds.ndim == 1:
                 preds = preds.reshape(-1, 1)

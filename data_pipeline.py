@@ -481,8 +481,13 @@ class DataValidator:
                 "max": float(np.max(col)),
             }
             if _scipy_stats is not None:
-                dist[fn[j]]["skewness"] = float(_scipy_stats.skew(col))
-                dist[fn[j]]["kurtosis"] = float(_scipy_stats.kurtosis(col))
+                if float(np.std(col)) < 1e-15:
+                    dist[fn[j]]["skewness"] = 0.0
+                    dist[fn[j]]["kurtosis"] = 0.0
+                else:
+                    with np.errstate(all="ignore"):
+                        dist[fn[j]]["skewness"] = float(_scipy_stats.skew(col))
+                        dist[fn[j]]["kurtosis"] = float(_scipy_stats.kurtosis(col))
         report["distribution_summary"] = dist
         report["is_valid"] = len(report["issues"]) == 0
         return report
