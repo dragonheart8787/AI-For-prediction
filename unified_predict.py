@@ -295,9 +295,20 @@ class UnifiedPredictor:
         return X_arr
 
     def _adapt_features_from_dicts(self, rows: List[Dict[str, Any]]) -> np.ndarray:
-        keys: List[str] = sorted({k for r in rows for k in r.keys()})
+        """
+        將每列 dict 轉成 float 矩陣。若載入的模型帶有 ``_feature_names``，欄位順序與其一致；
+        否則使用所有出現過的鍵（排序）— 較不利於與訓練對齊。
+        非數值（字串、類別）以 SHA256 穩定雜湊對應到 [0,1)，**與訓練時若未用同一套編碼則預測可能無意義**。
+        """
+        fn = self._feature_names
+        if fn and len(fn) > 0:
+            keys = list(fn)
+        else:
+            keys = sorted({k for r in rows for k in r.keys()})
 
         def encode_value(v: Any) -> float:
+            if isinstance(v, bool):
+                return 1.0 if v else 0.0
             if isinstance(v, numbers.Number):
                 try:
                     return float(v)
@@ -305,9 +316,11 @@ class UnifiedPredictor:
                     return 0.0
             if v is None:
                 return 0.0
-            s = str(v)
-            h = int(hashlib.sha1(s.encode("utf-8")).hexdigest()[:8], 16)
-            return (h % 1000) / 1000.0
+            s = str(v).strip()
+            if not s:
+                return 0.0
+            h = hashlib.sha256(s.encode("utf-8")).digest()[:8]
+            return int.from_bytes(h, "big") / float(2**64)
 
         data: List[List[float]] = []
         for r in rows:

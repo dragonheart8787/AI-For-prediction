@@ -157,6 +157,17 @@ class TestInputFormats:
         result = p.predict(rows_test)
         assert len(result["prediction"]) == 2
 
+    def test_dict_order_follows_saved_feature_names(self, rng):
+        X = rng.normal(size=(40, 3))
+        y = rng.normal(size=40)
+        p = UnifiedPredictor(auto_onnx=False)
+        p.fit(X, y, model="linear")
+        p._feature_names = ["f0", "f1", "f2"]
+        r_matrix = p.predict([[3.0, 2.0, 1.0]])["prediction"]
+        r_dict = p.predict([{"f2": 1.0, "f0": 3.0, "f1": 2.0}])["prediction"]
+        assert len(r_matrix) == 1 and len(r_dict) == 1
+        assert abs(r_matrix[0][0] - r_dict[0][0]) < 1e-9
+
     def test_1d_array_reshaped(self, fitted_predictor):
         p, _, _ = fitted_predictor
         result = p.predict(np.array([1.0, 2.0, 3.0, 4.0]))

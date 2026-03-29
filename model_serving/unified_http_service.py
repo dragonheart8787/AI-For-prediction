@@ -10,7 +10,7 @@ UnifiedPredictor HTTP 服務（僅標準函式庫：wsgiref + json）
   GET  /v1/models       列出 models 目錄內可載入的 task_*.pkl
   POST /v1/load_model   {"task_id": "stock_price_next"} 或 "__universal__"
   GET  /v1/model/info   模型摘要（含 feature_names）
-  POST /v1/predict      {"X": [[...]], "domain": "financial"}
+  POST /v1/predict      {"X": [[...]], "domain": "..."} 或 {"rows": [{...},...]}（物件鍵＝特徵名，可含字串會編碼）
   POST /v1/predict_many {"X": [[...]], "domain": "...", "batch_size": 1024}
 """
 from __future__ import annotations
@@ -43,6 +43,18 @@ def _validate_X_matrix(X: Any) -> Optional[str]:
                 return "X_values_must_be_numeric"
             if not isinstance(v, (int, float)):
                 return "X_values_must_be_numeric"
+    return None
+
+
+def _validate_rows_objects(rows: Any) -> Optional[str]:
+    """``rows`` 為物件陣列；值可為數字／字串／布林（由模型端編碼）。"""
+    if not isinstance(rows, list):
+        return "rows_must_be_list"
+    if len(rows) > MAX_PREDICT_ROWS:
+        return "rows_too_many_rows"
+    for row in rows:
+        if not isinstance(row, dict):
+            return "row_must_be_object"
     return None
 
 
@@ -142,7 +154,18 @@ footer code {{ font-size: 0.7rem; }}
   <div id="featureInputs" style="margin-top:0.75rem;"></div>
   <div class="row" style="margin-top:1rem;">
     <button type="button" id="btnDemo">填入示範值</button>
-    <button type="button" id="btnPredict">預測</button>
+    <button type="button" id="btnPredict">預測（表單）</button>
+  </div>
+</div>
+<div class="card" id="jsonCard" hidden>
+  <h2 style="font-size:1rem;margin:0 0 0.35rem;">進階：JSON 批次（欄位名 + 可含文字）</h2>
+  <p style="font-size:0.78rem;color:var(--muted);margin:0 0 0.5rem;line-height:1.45;">
+    每列為一個物件，<strong>鍵名</strong>須與上方特徵名相同。數字可直接寫；<strong>文字</strong>會變成固定 0～1 編碼（與訓練時語意未對齊則預測僅供實驗）。也可貼多筆陣列一次預測。
+  </p>
+  <textarea id="jsonRows" rows="8" style="width:100%;font-family:ui-monospace,monospace;font-size:0.78rem;border-radius:8px;border:1px solid #3d4f66;background:#0d1117;color:var(--text);padding:0.5rem;resize:vertical;"></textarea>
+  <div class="row" style="margin-top:0.65rem;">
+    <button type="button" class="secondary" id="btnJsonExample">從表單填入 JSON</button>
+    <button type="button" id="btnPredictJson">送出 JSON 預測</button>
   </div>
 </div>
 <div class="card" id="outCard" hidden>
@@ -152,7 +175,7 @@ footer code {{ font-size: 0.7rem; }}
 <footer>
   <p>模型目錄：<code>{safe_root}</code></p>
   <p>目前檔案：<code>{safe_path}</code></p>
-  <p>API：<code>GET /v1/models</code> · <code>POST /v1/load_model</code> · <code>POST /v1/predict</code>（亦可用 curl）</p>
+  <p>API：<code>GET /v1/models</code> · <code>POST /v1/load_model</code> · <code>POST /v1/predict</code>（<code>X</code> 矩陣或 <code>rows</code> 物件陣列）</p>
 </footer>
 <script>
 (function () {{
@@ -164,6 +187,10 @@ footer code {{ font-size: 0.7rem; }}
   const domainIn = document.getElementById('domainIn');
   const btnPredict = document.getElementById('btnPredict');
   const btnDemo = document.getElementById('btnDemo');
+  const jsonCard = document.getElementById('jsonCard');
+  const jsonRows = document.getElementById('jsonRows');
+  const btnJsonExample = document.getElementById('btnJsonExample');
+  const btnPredictJson = document.getElementById('btnPredictJson');
   const outCard = document.getElementById('outCard');
   const outPre = document.getElementById('out');
 
@@ -209,6 +236,7 @@ footer code {{ font-size: 0.7rem; }}
       const info = await ir.json();
       buildFeatureForm(info);
       fillDemo();
+      syncJsonFromForm();
       loadMsg.textContent = '伺服器已載入模型，可調整特徵後按「預測」。若要換模型請選擇任務後按「載入模型」。';
     }} catch (e) {{}}
   }}
@@ -234,6 +262,21 @@ footer code {{ font-size: 0.7rem; }}
       featureInputs.appendChild(row);
     }}
     featCard.hidden = dim === 0;
+    if (jsonCard) jsonCard.hidden = dim === 0;
+  }}
+
+  function syncJsonFromForm() {{
+    if (!jsonRows) return;
+    const inputs = featureInputs.querySelectorAll('input[type=text]');
+    if (!inputs.length) return;
+    const o = {{}};
+    inputs.forEach(function (inp) {{
+      const key = inp.dataset.feature;
+      const raw = String(inp.value).replace(/,/g, '').trim();
+      const v = parseFloat(raw);
+      o[key] = Number.isNaN(v) ? (raw || '') : v;
+    }});
+    jsonRows.value = JSON.stringify([o], null, 2);
   }}
 
   function fillDemo() {{
@@ -264,10 +307,12 @@ footer code {{ font-size: 0.7rem; }}
       if (!ir.ok) throw new Error(info.error || 'info');
       buildFeatureForm(info);
       fillDemo();
+      syncJsonFromForm();
       outCard.hidden = true;
     }} catch (e) {{
       loadMsg.textContent = '載入失敗：' + e;
       featCard.hidden = true;
+      if (jsonCard) jsonCard.hidden = true;
     }}
     btnLoad.disabled = false;
   }}
@@ -300,9 +345,38 @@ footer code {{ font-size: 0.7rem; }}
     btnPredict.disabled = false;
   }}
 
+  async function runPredictJson() {{
+    if (!jsonRows) return;
+    let rows;
+    try {{
+      rows = JSON.parse(jsonRows.value.trim());
+    }} catch (e) {{
+      alert('JSON 無法解析：' + e);
+      return;
+    }}
+    if (!Array.isArray(rows)) rows = [rows];
+    outPre.textContent = '計算中…';
+    outCard.hidden = false;
+    btnPredictJson.disabled = true;
+    try {{
+      const r = await fetch('/v1/predict', {{
+        method: 'POST',
+        headers: {{ 'Content-Type': 'application/json' }},
+        body: JSON.stringify({{ rows: rows, domain: domainIn.value || 'custom' }})
+      }});
+      const j = await r.json();
+      outPre.textContent = JSON.stringify(j, null, 2);
+    }} catch (e) {{
+      outPre.textContent = String(e);
+    }}
+    btnPredictJson.disabled = false;
+  }}
+
   btnLoad.addEventListener('click', loadModel);
   btnPredict.addEventListener('click', runPredict);
-  btnDemo.addEventListener('click', fillDemo);
+  btnDemo.addEventListener('click', function () {{ fillDemo(); syncJsonFromForm(); }});
+  if (btnJsonExample) btnJsonExample.addEventListener('click', syncJsonFromForm);
+  if (btnPredictJson) btnPredictJson.addEventListener('click', runPredictJson);
   refreshTaskList().then(bootstrapIfServerHasModel);
 }})();
 </script>
@@ -528,14 +602,32 @@ class UnifiedPredictHTTPApp:
                 return _json_response(
                     400, {"error": "invalid_json", "detail": str(e)}, extra_headers=rid_h
                 )
-            if not isinstance(data, dict) or "X" not in data:
-                return _json_response(400, {"error": "missing_field_X"}, extra_headers=rid_h)
-            verr = _validate_X_matrix(data["X"])
-            if verr:
-                return _json_response(400, {"error": verr}, extra_headers=rid_h)
+            if not isinstance(data, dict):
+                return _json_response(400, {"error": "body_must_be_object"}, extra_headers=rid_h)
+            has_x = "X" in data
+            has_rows = "rows" in data
+            if (not has_x and not has_rows) or (has_x and has_rows):
+                return _json_response(
+                    400,
+                    {"error": "provide_either_X_or_rows", "detail": "擇一提供：純數矩陣 X 或物件陣列 rows"},
+                    extra_headers=rid_h,
+                )
             domain = str(data.get("domain") or "financial")
             try:
-                out = self.predictor.predict(data["X"], domain=domain)
+                if has_x:
+                    verr = _validate_X_matrix(data["X"])
+                    if verr:
+                        return _json_response(400, {"error": verr}, extra_headers=rid_h)
+                    payload = data["X"]
+                else:
+                    rows = data["rows"]
+                    if isinstance(rows, dict):
+                        rows = [rows]
+                    verr = _validate_rows_objects(rows)
+                    if verr:
+                        return _json_response(400, {"error": verr}, extra_headers=rid_h)
+                    payload = rows
+                out = self.predictor.predict(payload, domain=domain)
             except Exception as e:
                 logger.exception("predict failed")
                 return _json_response(

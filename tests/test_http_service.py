@@ -89,3 +89,14 @@ def test_http_v1_models_and_load(tmp_path: Path):
     assert st3 == 200
     info = json.loads(b3.decode())
     assert info.get("feature_names") == ["a", "b"]
+
+    st4, _, b4 = app.handle_request(
+        "POST",
+        "/v1/predict",
+        json.dumps(
+            {"rows": [{"a": 1.0, "b": 2.0}, {"a": 0.0, "b": 0.0}], "domain": "custom"}
+        ).encode("utf-8"),
+    )
+    assert st4 == 200
+    pred = json.loads(b4.decode())
+    assert len(pred.get("prediction", [])) == 2
