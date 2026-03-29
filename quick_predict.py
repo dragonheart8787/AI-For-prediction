@@ -7,6 +7,9 @@
 ----
   python quick_predict.py --list
   python quick_predict.py --task stock_price_next --info
+  python quick_predict.py --demo
+  python quick_predict.py --task stock_price_next --demo
+  python quick_predict.py --task covid_cases_next --interactive
   python quick_predict.py --task stock_price_next --values 1.0,2,3,4,5
   python quick_predict.py --model models/task_stock_price_next.pkl --csv my_rows.csv
   echo [[1,2,3,4,5],[1,2,3,4,5]] | python quick_predict.py --task stock_price_next --json -
@@ -20,7 +23,7 @@ import csv
 import json
 import os
 import sys
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Sequence
 
 import numpy as np
 
@@ -128,6 +131,83 @@ def load_features_json(raw: str, feature_names: Optional[List[str]]) -> np.ndarr
     raise ValueError("無法解析的 JSON 結構")
 
 
+def _default_for_feature_name(name: str) -> float:
+    n = name.lower().split("__")[-1]
+    defaults: Dict[str, float] = {
+        "open": 185.0,
+        "high": 187.0,
+        "low": 184.0,
+        "close": 186.0,
+        "volume": 8_500_000.0,
+        "new_cases": 350.0,
+        "new_deaths": 5.0,
+        "max_temp": 29.0,
+        "min_temp": 22.0,
+        "temp": 25.0,
+        "temperature": 25.0,
+        "sentiment": 0.15,
+        "demand": 12000.0,
+        "load": 11500.0,
+    }
+    if n in defaults:
+        return defaults[n]
+    h = hash(n) % 97
+    return float(1 + (h % 20) * 0.1)
+
+
+def demo_feature_row(
+    feature_names: Optional[List[str]], input_dim: Optional[int]
+) -> np.ndarray:
+    """依特徵名稱產生一列示範數值；無名稱時依維度給遞增小數。"""
+    dim = int(input_dim) if input_dim is not None else 0
+    names = list(feature_names) if feature_names else []
+    if names:
+        row = [_default_for_feature_name(nm) for nm in names[:dim or len(names)]]
+        if dim and len(row) < dim:
+            row.extend(1.0 + 0.05 * j for j in range(len(row), dim))
+        elif not dim:
+            dim = len(row)
+        return np.array([row[:dim]], dtype=float)
+    if dim <= 0:
+        raise ValueError("無法建立示範輸入：模型缺少 input_dim 與 feature_names")
+    row = [1.0 + 0.12 * j for j in range(dim)]
+    return np.array([row], dtype=float)
+
+
+def interactive_feature_row(
+    feature_names: Optional[List[str]], input_dim: Optional[int],
+) -> np.ndarray:
+    demo = demo_feature_row(feature_names, input_dim).ravel()
+    dim = int(demo.size)
+    names = list(feature_names) if feature_names else [f"f{i}" for i in range(dim)]
+    if len(names) != dim:
+        names = [f"f{i}" for i in range(dim)]
+    print("請輸入各特徵數值（直接 Enter = 採用示範值）：", flush=True)
+    row: List[float] = []
+    for i in range(dim):
+        nm = names[i]
+        dv = float(demo[i])
+        try:
+            s = input(f"  {nm}  [{dv}]: ").strip()
+        except EOFError:
+            s = ""
+        row.append(float(s) if s else dv)
+    return np.array([row], dtype=float)
+
+
+def auto_pick_task_id(ns: argparse.Namespace) -> None:
+    """未指定任務時選一個 task_*.pkl（優先股價）。"""
+    root = _models_root(ns)
+    pkls = [x for x in list_saved_models(root) if x.startswith("task_")]
+    if not pkls:
+        raise FileNotFoundError(
+            f"模型目錄內沒有 task_*.pkl：{root}。請先執行 crawler_train_pipeline 訓練。"
+        )
+    pref = "task_stock_price_next.pkl"
+    pick = pref if pref in pkls else pkls[0]
+    ns.task = pick[5:-4]
+
+
 def parse_values_arg(s: str, n_expected: Optional[int]) -> np.ndarray:
     parts = [p.strip() for p in s.split(",") if p.strip()]
     if not parts:
@@ -191,6 +271,17 @@ def main() -> None:
         metavar="PATH_OR_DASH",
         help='JSON：檔案路徑，或 "-" 從 stdin 讀取（陣列的陣列或物件陣列）',
     )
+    src.add_argument(
+        "--demo",
+        action="store_true",
+        help="用內建示範特徵跑一筆（未指定 --task 時優先載入股價模型）",
+    )
+    src.add_argument(
+        "--interactive",
+        "-i",
+        action="store_true",
+        help="逐步輸入每個特徵；Enter 採用示範值",
+    )
     ap.add_argument(
         "--quiet",
         action="store_true",
@@ -206,6 +297,9 @@ def main() -> None:
             sys.exit(1)
         return
 
+    if (ns.demo or ns.interactive) and not ns.model and not ns.universal and not ns.task:
+        auto_pick_task_id(ns)
+
     path = resolve_pkl_path(ns)
     p = build_predictor()
     p.load_model(path)
@@ -217,15 +311,19 @@ def main() -> None:
         print(json.dumps(cmd_info(p, path), ensure_ascii=False, indent=2, default=str))
         return
 
-    if not (ns.values or ns.csv or ns.json):
+    if not (ns.values or ns.csv or ns.json or ns.demo or ns.interactive):
         print(
-            "未指定輸入。請使用 --values、--csv 或 --json；或先執行 --info 查看特徵順序。",
+            "未指定輸入。可加 --demo 試跑一筆，或 --values / --csv / --json；--info 可查特徵順序。",
             file=sys.stderr,
         )
         ap.print_help()
         sys.exit(2)
 
-    if ns.values:
+    if ns.demo:
+        X = demo_feature_row(fn, n_exp)
+    elif ns.interactive:
+        X = interactive_feature_row(fn, n_exp)
+    elif ns.values:
         X = parse_values_arg(ns.values, n_exp)
     elif ns.csv:
         X = load_features_csv(ns.csv, fn)
@@ -260,6 +358,18 @@ def main() -> None:
         )
 
     out = p.predict(X, domain=ns.domain)
+    if (ns.demo or ns.interactive) and not ns.quiet:
+        print("\n── 輸入特徵（單列）──", file=sys.stderr)
+        lbl = list(fn or [f"x{i}" for i in range(X.shape[1])])
+        for j, name in enumerate(lbl):
+            print(f"  {name}: {float(X[0, j])}", file=sys.stderr)
+        preds = out.get("predictions") or []
+        print("── 預測結果 ──", file=sys.stderr)
+        for i, pr in enumerate(preds):
+            v = pr[0] if isinstance(pr, list) and pr else pr
+            print(f"  樣本 {i + 1}: {v}", file=sys.stderr)
+        print(f"  置信度: {out.get('confidence')}\n", file=sys.stderr)
+
     slim = {
         "predictions": out.get("predictions"),
         "model_type": out.get("model_type"),
