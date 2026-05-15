@@ -9,7 +9,9 @@
   - RMSE–R² 氣泡圖（氣泡大小＝樣本數、顏色＝模型）
   - 依任務分面：實驗序號 vs RMSE
   - 批次訓練每 job 耗時長條圖（若有 data/batch_train_log.jsonl）
-  - 保留原有時間線、walk-forward、epoch、artifacts 長條等
+  - **訓練穩定度：R² 序列（標示 R²<0＝比預測平均還差）**
+  - **training_health_report.json**：彙總可疑實驗、批次失敗、epoch 損失發散提示
+  - 保留 walk-forward、epoch 曲線（並標註疑似損失爆發）、artifacts 長條等
 
 使用：
   pip install -r requirements-viz.txt
@@ -446,6 +448,103 @@ def plot_runs_timeline(runs: List[Dict[str, Any]], out_path: str, plt: Any) -> b
     return True
 
 
+def _epoch_run_divergent(recs: List[Dict[str, Any]]) -> Tuple[bool, str]:
+    """偵測逐 epoch 曲線是否疑似發散（損失爆炸、NaN）。"""
+    if len(recs) < 2:
+        return False, ""
+    tl = [float(r.get("train_loss", 0) or 0) for r in recs]
+    if any(not np.isfinite(t) for t in tl):
+        return True, "train_loss 非有限值"
+    if len(tl) >= 3 and tl[0] > 1e-12:
+        ratio = tl[-1] / tl[0]
+        if ratio > 500:
+            return True, f"train 末/初={ratio:.0f}×"
+    vl_raw = [r.get("val_loss") for r in recs]
+    if any(v is not None for v in vl_raw):
+        vl = [float(v) for v in vl_raw if v is not None]
+        if len(vl) >= 2 and np.isfinite(vl[0]) and vl[0] > 1e-12 and vl[-1] / vl[0] > 500:
+            return True, "val_loss 暴升"
+    return False, ""
+
+
+def plot_train_r2_health(runs: List[Dict[str, Any]], out_path: str, plt: Any) -> bool:
+    """實驗序對 train_R²：R²<0 以紅點標示（比「只預測平均」還差）。"""
+    pts = [r for r in runs if r.get("train_r2") is not None]
+    if len(pts) < 1:
+        return False
+    xs = list(range(len(pts)))
+    r2s = [float(r["train_r2"]) for r in pts]
+    colors = ["#cb181d" if v < 0 else "#2b8cbe" for v in r2s]
+    fig, ax = plt.subplots(figsize=(min(22, 7 + len(pts) * 0.06), 5))
+    ax.axhline(0, color="#333", lw=1.2, zorder=1)
+    ax.fill_between(xs, -1.5, 0, alpha=0.12, color="red", label="R²<0")
+    ax.scatter(xs, r2s, c=colors, s=28, alpha=0.85, zorder=3, edgecolors="k", linewidths=0.2)
+    n_bad = sum(1 for v in r2s if v < 0)
+    ax.set_xlabel("實驗序（合併後列表索引）")
+    ax.set_ylabel("train R²")
+    ax.set_title(f"訓練 R² 走勢（紅＝R²<0，共 {n_bad} 筆）")
+    ax.set_ylim(min(-0.5, min(r2s) - 0.1), max(1.05, max(r2s) + 0.05))
+    ax.legend(loc="lower right", fontsize=8)
+    ax.grid(True, alpha=0.35)
+    fig.tight_layout()
+    fig.savefig(out_path, dpi=150)
+    plt.close(fig)
+    return True
+
+
+def analyze_training_health(
+    runs: List[Dict[str, Any]],
+    batch_rows: List[Dict[str, Any]],
+    epoch_div: List[Dict[str, Any]],
+) -> Dict[str, Any]:
+    """彙總：R² 為負、批次 job 失敗、epoch 疑似發散。"""
+    neg: List[Dict[str, Any]] = []
+    for r in runs:
+        tr2 = r.get("train_rmse")
+        t_r2 = r.get("train_r2")
+        if t_r2 is None:
+            continue
+        if float(t_r2) < 0:
+            neg.append(
+                {
+                    "task": r.get("task"),
+                    "model": r.get("model"),
+                    "train_r2": float(t_r2),
+                    "train_rmse": float(tr2) if tr2 is not None else None,
+                    "run_id": r.get("run_id"),
+                }
+            )
+    failed = [b for b in batch_rows if int(b.get("exit_code", 0) or 0) != 0]
+    return {
+        "negative_r2_count": len(neg),
+        "negative_r2_runs": neg[:500],
+        "batch_failed_count": len(failed),
+        "batch_failed_jobs": [
+            {
+                "task": b.get("task"),
+                "model": b.get("model"),
+                "exit_code": b.get("exit_code"),
+                "index": b.get("index"),
+            }
+            for b in failed[:200]
+        ],
+        "epoch_divergence_flags": epoch_div,
+        "notes": {
+            "negative_r2": (
+                "train R² < 0：模型在訓練集上比「永遠預測目標平均」還差，常見於樣本極少、"
+                "噪聲大、模型與資料不匹配，或特徵／目標製作錯誤；未必是優化器「發散」，但代表此次訓練無效。"
+            ),
+            "epoch_curve": (
+                "深度模型（mlp_torch / LSTM 等）若啟用 log_epoch，可檢查 09_epoch_loss_curves.png；"
+                "若 train_loss 相對首 epoch 暴增數百倍，可能學習率過大或數值不穩定。"
+            ),
+            "classic_ml": (
+                "傳統樹與線性模型為閉式／單次擬合，沒有「迭代 loss 曲線」；請以 train R²、RMSE、walk-forward 為主。"
+            ),
+        },
+    }
+
+
 def plot_r2_heatmap_task_model(runs: List[Dict[str, Any]], out_path: str, plt: Any) -> bool:
     return plot_heatmap_task_model(runs, out_path, plt, metric="train_r2")
 
@@ -459,11 +558,17 @@ def plot_epochs(by_run: Dict[str, List[Dict[str, Any]]], out_path: str, plt: Any
         ax = axes[i, 0]
         ep = [int(r.get("epoch", 0)) for r in recs]
         tl = [float(r.get("train_loss", 0)) for r in recs]
+        bad, reason = _epoch_run_divergent(recs)
         ax.plot(ep, tl, label="train_loss", color="#3182bd")
         vl = [r.get("val_loss") for r in recs]
         if any(v is not None for v in vl):
             ax.plot(ep, [float(v) if v is not None else float("nan") for v in vl], label="val_loss", color="#e6550d")
-        ax.set_title(f"Epoch run={rid[:14]}…")
+        title = f"Epoch run={rid[:14]}…"
+        if bad:
+            title += f"  ⚠ 疑似發散: {reason}"
+            ax.set_title(title, color="#b10000", fontweight="bold")
+        else:
+            ax.set_title(title)
         ax.legend(fontsize=8)
         ax.grid(True, alpha=0.3)
     fig.tight_layout()
@@ -571,10 +676,31 @@ def main() -> None:
         logger.info("已輸出 %s", p)
 
     ep = parse_epoch_logs(args.epochs, args.epoch_run_id, args.epoch_run_limit)
+    epoch_div = []
+    for rid, recs in ep.items():
+        bad, reason = _epoch_run_divergent(recs)
+        if bad:
+            epoch_div.append({"run_id": rid, "reason": reason})
+
     p = os.path.join(args.output_dir, "09_epoch_loss_curves.png")
     if plot_epochs(ep, p, plt, args.epoch_run_limit):
         written.append(p)
         logger.info("已輸出 %s", p)
+
+    health = analyze_training_health(runs, batch_rows, epoch_div)
+    health_path = os.path.join(args.output_dir, "training_health_report.json")
+    with open(health_path, "w", encoding="utf-8") as hf:
+        json.dump(health, hf, ensure_ascii=False, indent=2)
+    written.append(health_path)
+    logger.info(
+        "已輸出 %s（R²<0: %d 筆, 批次失敗: %d, epoch 疑似發散: %d）",
+        health_path,
+        health["negative_r2_count"],
+        health["batch_failed_count"],
+        len(epoch_div),
+    )
+
+    save("11_train_r2_health.png", plot_train_r2_health, runs)
 
     if art:
         tail = art[-40:]
@@ -602,7 +728,7 @@ def main() -> None:
         ax.hist(y, bins=min(60, max(12, int(np.sqrt(len(y))))), color="#74c476", edgecolor="white")
         ax.set_title("目標 y 分佈")
         fig.tight_layout()
-        p = os.path.join(args.output_dir, "11_data_y_distribution.png")
+        p = os.path.join(args.output_dir, "13_data_y_distribution.png")
         fig.savefig(p, dpi=150)
         plt.close(fig)
         written.append(p)
@@ -616,6 +742,11 @@ def main() -> None:
                 "n_artifact_runs": len(art_runs),
                 "n_merged_for_charts": len(runs),
                 "n_batch_jobs": len(batch_rows),
+                "training_health": {
+                    "negative_r2_count": health["negative_r2_count"],
+                    "batch_failed_count": health["batch_failed_count"],
+                    "epoch_divergence_suspected": len(epoch_div),
+                },
                 "outputs": written,
             },
             f,
